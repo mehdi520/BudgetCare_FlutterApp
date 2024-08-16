@@ -36,86 +36,89 @@ class IncomeExpenseChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => GraphDataCubit()..getGraphData(),
-      child: BlocBuilder<GraphDataCubit, GraphDataState>(
-        builder: (context, state) {
-          if(state is GraphDataLoadedState)
-            {
-              data = getSampleData(state.response);
-              return BarChart(
-                BarChartData(
-                  alignment: BarChartAlignment.spaceAround,
-                  maxY: getMaxYValue(state.response),
-                  barGroups: data.map((item) {
-                    return BarChartGroupData(
-                      x: data.indexOf(item),
-                      barRods: [
-                        BarChartRodData(
-                          toY: item.income,
-                          color: AppColors.primary,
-                          width: 10,
-                          borderRadius: BorderRadius.zero,
-                          backDrawRodData: BackgroundBarChartRodData(
-                            show: true,
-                            toY: 3500,
-                            color: Colors.transparent!,
-                          ),
+    return BlocBuilder<GraphDataCubit, GraphDataState>(
+      builder: (context, state) {
+        if(state is GraphDataLoadedState)
+          {
+            data = getSampleData(state.response);
+            return BarChart(
+              BarChartData(
+                alignment: BarChartAlignment.spaceAround,
+                maxY: getMaxYValue(state.response),
+                barGroups: data.map((item) {
+                  return BarChartGroupData(
+                    x: data.indexOf(item),
+                    barRods: [
+                      BarChartRodData(
+                        toY: item.income,
+                        color: AppColors.primary,
+                        width: 10,
+                        borderRadius: BorderRadius.zero,
+                        backDrawRodData: BackgroundBarChartRodData(
+                          show: true,
+                          toY: 3500,
+                          color: Colors.transparent!,
                         ),
-                        BarChartRodData(
-                          toY: item.expense,
-                          color: AppColors.lightBlue,
-                          width: 10,
-                          borderRadius: BorderRadius.zero,
-                          backDrawRodData: BackgroundBarChartRodData(
-                            show: true,
-                            toY: 3500,
-                            color: Colors.transparent!,
-
-                          ),
-                        ),
-                      ],
-                    );
-                  }).toList(),
-                  titlesData: FlTitlesData(
-                    bottomTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        showTitles: true,
-                        reservedSize: 30,
-                        getTitlesWidget: (value, meta) {
-                          final index = value.toInt();
-                          return SideTitleWidget(
-                            axisSide: meta.axisSide,
-                            child: Text(
-                              data[index].month,
-                              style: TextStyle(fontSize: 14),
-                            ),
-                          );
-                        },
                       ),
-                    ),
-                    leftTitles: AxisTitles(
-                      sideTitles: SideTitles(showTitles: true,  reservedSize: 30),
-                    ),
-                    topTitles: AxisTitles(
-                      sideTitles: SideTitles(showTitles: false),
-                    ),
-                    rightTitles: AxisTitles(
-                      sideTitles: SideTitles(showTitles: false),
+                      BarChartRodData(
+                        toY: item.expense,
+                        color: AppColors.lightBlue,
+                        width: 10,
+                        borderRadius: BorderRadius.zero,
+                        backDrawRodData: BackgroundBarChartRodData(
+                          show: true,
+                          toY: 3500,
+                          color: Colors.transparent!,
+
+                        ),
+                      ),
+                    ],
+                  );
+                }).toList(),
+                titlesData: FlTitlesData(
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      reservedSize: 30,
+                      getTitlesWidget: (value, meta) {
+                        final index = value.toInt();
+                        return SideTitleWidget(
+                          axisSide: meta.axisSide,
+                          child: Text(
+                            data[index].month,
+                            style: TextStyle(fontSize: 14),
+                          ),
+                        );
+                      },
                     ),
                   ),
-                  borderData: FlBorderData(show: false),
-                  gridData: FlGridData(show: false),
+                  leftTitles: AxisTitles(
+                    sideTitles: SideTitles(showTitles: true,  reservedSize: 30),
+                  ),
+                  topTitles: AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  rightTitles: AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
                 ),
+                borderData: FlBorderData(show: false),
+                gridData: FlGridData(show: false),
+              ),
 
-              );
-            }
+            );
+          }
 
+        if(state is GraphDataLoadingState)
+          {
             return Center(
               child: CircularProgressIndicator(),
             );
-        },
-      ),
+          }
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+      },
     );
   }
 

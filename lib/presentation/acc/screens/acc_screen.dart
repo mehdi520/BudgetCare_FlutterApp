@@ -3,6 +3,7 @@ import 'package:budget_care/data/models/user/data_model/user_model.dart';
 import 'package:budget_care/data/models/user/req_model/update_profile_req_model.dart';
 import 'package:budget_care/domain/user/usecases/update_profile_usecase.dart';
 import 'package:budget_care/infra/common/common_export.dart';
+import 'package:budget_care/infra/core/blocs/get_login_user/get_logged_in_cubit.dart';
 import 'package:budget_care/infra/core/core_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -11,7 +12,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class AccScreen extends StatelessWidget {
   SecureStorage secureStorage;
   UserModel? user;
-  AccScreen({super.key, required this.secureStorage});
+  GetLoggedInCubit getLoggedInCubit;
+
+  AccScreen({super.key, required this.secureStorage,required this.getLoggedInCubit});
 
   @override
   Widget build(BuildContext context) {
@@ -22,8 +25,12 @@ class AccScreen extends StatelessWidget {
     TextEditingController _dateCtrl = TextEditingController();
     return Scaffold(
         appBar: BasicAppBar(),
-        body: BlocProvider(
-          create: (context) => ButtonCubit(),
+        body: MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) => ButtonCubit(),
+            ),
+          ],
           child: BlocListener<ButtonCubit, ButtonState>(
             listener: (context, state) async {
               if (state is ButtonFailureState) {
@@ -32,8 +39,12 @@ class AccScreen extends StatelessWidget {
               if (state is ButtonSuccessState) {
                 user!.name = _nameCtr.text;
                 user!.phone = _phoneCtrl.text;
-                secureStorage.saveProfile(user);
-                context.flushBarSuccessMessage(message: "Profile updated successfully.");
+                await secureStorage.saveProfile(user);
+                // context.read<GetLoggedInCubit>().getLoggedInUser();
+                getLoggedInCubit.getLoggedInUser();
+
+                context.flushBarSuccessMessage(
+                    message: "Profile updated successfully.");
               }
             },
             child: Stack(children: [
@@ -147,7 +158,6 @@ class AccScreen extends StatelessWidget {
                                       onTap: () {
                                         if (_formKey.currentState?.validate() ??
                                             false) {
-
                                           context.read<ButtonCubit>().execute(
                                               usecase: UpdateProfileUsecase(),
                                               params: UpdateProfileReqModel(

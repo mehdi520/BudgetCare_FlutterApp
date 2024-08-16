@@ -74,21 +74,21 @@ class CategoryScreen extends StatelessWidget {
             return Center();
           },
         ),
-        floatingActionButton: _floatingAddCategory(),
+        floatingActionButton: _floatingAddCategory(context),
       ),
     );
   }
 
-  Widget _floatingAddCategory() {
+  Widget _floatingAddCategory(BuildContext scContext) {
     return Builder(
       builder: (context) {
         return FloatingActionButton(
           shape: CircleBorder(),
           backgroundColor: AppColors.primary,
           onPressed: () {
-            AppBottomsheet.display(context, CategoryFormWidget(onCategoryAdded: () {
+            AppBottomsheet.display(scContext, CategoryFormWidget(onCategoryAdded: () {
               context.read<CategoryCubit>().getCategories();
-            },));
+            },rootContext: scContext,));
           },
           child: Icon(
             Icons.add,

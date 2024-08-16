@@ -20,6 +20,8 @@ class LoggingInterceptor extends Interceptor {
   void onError(DioError err, ErrorInterceptorHandler handler) {
     print("Error: ${err.response?.statusCode} ${err.requestOptions.uri}");
     print("Error Message: ${err.message}");
+    print("Error Message: ${err.error}");
+
     super.onError(err, handler);
   }
 }

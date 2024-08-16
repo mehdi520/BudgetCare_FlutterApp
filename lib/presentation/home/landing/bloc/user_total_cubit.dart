@@ -17,7 +17,7 @@ class UserTotalCubit extends Cubit<UserTotalState> {
           emit(UserTotalFailureState(error: error));
         },
             (data){
-          emit(UserTotalLoadedState(response: data.data));
+           emit(UserTotalLoadedState(response: data.data));
         });
   }
 

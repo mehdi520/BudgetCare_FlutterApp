@@ -7,6 +7,7 @@ import 'package:budget_care/data/repository/auth/auth_repository_impl.dart';
 import 'package:budget_care/data/repository/category/category_repository_impl.dart';
 import 'package:budget_care/data/repository/expense/expense_repository_impl.dart';
 import 'package:budget_care/data/repository/income/income_respository_impl.dart';
+import 'package:budget_care/data/repository/local_storage/local_storage_repository_impl.dart';
 import 'package:budget_care/data/repository/user/user_repository_impl.dart';
 import 'package:budget_care/domain/auth/contract/auth_repository.dart';
 import 'package:budget_care/domain/auth/usecases/signup_usecase.dart';
@@ -17,6 +18,8 @@ import 'package:budget_care/domain/expense/contract/expense_repository.dart';
 import 'package:budget_care/domain/expense/usecases/get_expense_usecase.dart';
 import 'package:budget_care/domain/income/contract/income_repository.dart';
 import 'package:budget_care/domain/income/usecases/get_income_usecase.dart';
+import 'package:budget_care/domain/local_storage/contract/local_storage_repository.dart';
+import 'package:budget_care/domain/local_storage/usecase/getloggedinuserusecase.dart';
 import 'package:budget_care/domain/user/contract/user_repository.dart';
 import 'package:budget_care/domain/user/usecases/change_pass_usecase.dart';
 import 'package:budget_care/domain/user/usecases/get_graph_data_usecase.dart';
@@ -46,18 +49,29 @@ Future<void> initializedDepencies() async {
   final dio = Dio();
   final securityContext = SecurityContext(withTrustedRoots: true);
   final cert = await rootBundle.load('assets/cert/certificate.pem');
+  print(cert);
+  print(cert.buffer.asUint8List());
+
   securityContext.setTrustedCertificatesBytes(cert.buffer.asUint8List());
   final httpClient = HttpClient(context: securityContext);
 
-  final httpClientAdapter = HttpClientAdapter();
-  dio.httpClientAdapter = httpClientAdapter;
-  dio.httpClientAdapter = DefaultHttpClientAdapter()
-    ..onHttpClientCreate = (client) {
+
+  dio.httpClientAdapter = IOHttpClientAdapter()
+    ..createHttpClient = () {
       return httpClient;
     };
 
+
+
+  // final httpClientAdapter = HttpClientAdapter();
+  // dio.httpClientAdapter = httpClientAdapter;
+  // dio.httpClientAdapter = IOHttpClientAdapter()
+  //   ..onHttpClientCreate = (client) {
+  //     return httpClient;
+  //   };
+
   dio.options = BaseOptions(
- //   baseUrl: 'https://yourapiurl.com',
+    baseUrl: APIBaseURL,
     connectTimeout: Duration(minutes: 2),
     receiveTimeout: Duration(minutes: 2),
   );
@@ -75,6 +89,7 @@ Future<void> initializedDepencies() async {
   sl.registerSingleton<IncomeRepository>(IncomeRespositoryImpl(sl(), sl()));
   sl.registerSingleton<ExpenseRepository>(ExpenseRepositoryImpl(sl(), sl()));
   sl.registerSingleton<UserRepository>(UserRepositoryImpl(sl(), sl()));
+  sl.registerSingleton<LocalStorageRepository>(LocalStorageRepositoryImpl(sl()));
 
   // usecases
   sl.registerSingleton<SignupUsecase>(SignupUsecase());
@@ -86,6 +101,7 @@ Future<void> initializedDepencies() async {
   sl.registerSingleton<ChangePassUsecase>(ChangePassUsecase());
   sl.registerSingleton<GetUserTotalsUsecase>(GetUserTotalsUsecase());
   sl.registerSingleton<GetGraphDataUsecase>(GetGraphDataUsecase());
+  sl.registerSingleton<Getloggedinuserusecase>(Getloggedinuserusecase());
 
 
 }

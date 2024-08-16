@@ -1,6 +1,8 @@
 import 'package:budget_care/data/data_sources/local/secure_storage_repo/secure_storage.dart';
 import 'package:budget_care/data/models/user/data_model/user_model.dart';
 import 'package:budget_care/infra/common/common_export.dart';
+import 'package:budget_care/infra/common/common_widgets/sessionexpired_popup/session_expired_dialog.dart';
+import 'package:budget_care/infra/core/blocs/get_login_user/get_logged_in_cubit.dart';
 import 'package:budget_care/presentation/acc/screens/acc_screen.dart';
 import 'package:budget_care/presentation/acc/screens/change_pass.dart';
 import 'package:budget_care/presentation/category/screen/category_screen.dart';
@@ -9,6 +11,7 @@ import 'package:budget_care/presentation/home/landing/bloc/graph_data_cubit.dart
 import 'package:budget_care/presentation/home/landing/bloc/user_total_cubit.dart';
 import 'package:budget_care/presentation/home/landing/widgets/bar_chart.dart';
 import 'package:budget_care/presentation/income/screens/income_screen.dart';
+import 'package:budget_care/presentation/pub/login/bloc/login_cubit.dart';
 import 'package:budget_care/presentation/pub/login/screens/login_screen.dart';
 import 'package:budget_care/presentation/reports/screens/report_screen.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -27,7 +30,7 @@ class LandingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: _homeAppbar(),
+        appBar: _homeAppbar(context),
         drawer: _navDrawer(context),
         body: Stack(
           children: [
@@ -41,6 +44,11 @@ class LandingScreen extends StatelessWidget {
                   UserTotalCubit()
                     ..getUserTotalData(),
                 ),
+                BlocProvider(
+                  create: (context) =>
+                  GraphDataCubit()
+                    ..getGraphData(),
+                ),
               ],
               child: Column(
                 children: [
@@ -51,29 +59,54 @@ class LandingScreen extends StatelessWidget {
                   SizedBox(
                     height: context.mediaQueryHeight * 0.03,
                   ),
-                  BlocBuilder<UserTotalCubit, UserTotalState>(
-                    builder: (context, state) {
-                      if (state is UserTotalLoadedState) {
-                        return Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            _monthlyTotal('YOUR INCOME', state.response
-                                .totalThisMonthIncome.toString()),
-                            _monthlyTotal('YOUR EXPENSE', state.response
-                                .totalThisMonthExpense.toString()),
-                          ],
-                        );
+                  BlocConsumer<UserTotalCubit, UserTotalState>(
+                    listener: (contextt, state) {
+                      if (state is UserTotalFailureState) {
+                        if (state.error.code == 401) {
+                         //
+                          secureStorage.storage.write(key: usertoken, value: '');
+                         // AppNavigator.pushReplacement(context, LoginScreen());
+                          showSessionExpiredDialog(context,(){
+                            AppNavigator.pushReplacement(context, LoginScreen());
+                          });
+                        }
                       }
-
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          _monthlyTotal('YOUR INCOME', '0'),
-                          _monthlyTotal('YOUR EXPENSE', '0'),
-                        ],
-                      );
                     },
-                  ),
+                    builder: (context, state) {
+                          if (state is UserTotalLoadedState) {
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                _monthlyTotal('YOUR INCOME', state.response
+                                    .totalThisMonthIncome.toString()),
+                                IconButton(onPressed: () {
+                                  context.read<UserTotalCubit>()
+                                      .getUserTotalData();
+                                  context.read<GraphDataCubit>().getGraphData();
+                                }, icon: Icon(Icons.refresh_outlined)),
+                                _monthlyTotal('YOUR EXPENSE', state.response
+                                    .totalThisMonthExpense.toString()),
+                              ],
+                            );
+                          }
+
+
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              _monthlyTotal('YOUR INCOME', '0'),
+                              IconButton(onPressed: () {
+                                context.read<UserTotalCubit>()
+                                    .getUserTotalData();
+                                context.read<GraphDataCubit>().getGraphData();
+                              }, icon: Icon(Icons.refresh_outlined)),
+                              _monthlyTotal('YOUR EXPENSE', '0'),
+                            ],
+                          );
+                        },
+                      ),
+
+
                   Expanded(
                       child: Container(
                         // color: AppColors.primary,
@@ -88,18 +121,21 @@ class LandingScreen extends StatelessWidget {
                                 )),
                             BlocBuilder<UserTotalCubit, UserTotalState>(
                               builder: (context, state) {
-                                if(state is UserTotalLoadedState)
-                                  {
-                                    return Row(
-                                      mainAxisAlignment: MainAxisAlignment
-                                          .spaceAround,
-                                      children: [
-                                        _indicators(),
-                                        _totalYear('Total Income', state.response.totalThisYearIncome.toString()),
-                                        _totalYear('Total Expense', state.response.totalThisMonthExpense.toString()),
-                                      ],
-                                    );
-                                  }
+                                if (state is UserTotalLoadedState) {
+                                  return Row(
+                                    mainAxisAlignment: MainAxisAlignment
+                                        .spaceAround,
+                                    children: [
+                                      _indicators(),
+                                      _totalYear('Total Income',
+                                          state.response.totalThisYearIncome
+                                              .toString()),
+                                      _totalYear('Total Expense',
+                                          state.response.totalThisMonthExpense
+                                              .toString()),
+                                    ],
+                                  );
+                                }
                                 return Row(
                                   mainAxisAlignment: MainAxisAlignment
                                       .spaceAround,
@@ -140,7 +176,7 @@ class LandingScreen extends StatelessWidget {
         ));
   }
 
-  PreferredSizeWidget _homeAppbar() {
+  PreferredSizeWidget _homeAppbar(BuildContext context) {
     return AppBar(
       backgroundColor: AppColors.primary,
       iconTheme: IconThemeData(color: AppColors.white),
@@ -152,10 +188,16 @@ class LandingScreen extends StatelessWidget {
         ),
       ),
       actions: [
-        Image.asset(
-          AppImages.logout,
-          height: 25,
-          color: AppColors.white,
+        InkWell(
+          onTap: (){
+            secureStorage.storage.write(key: usertoken, value: '');
+            AppNavigator.pushReplacement(context, LoginScreen());
+          },
+          child: Image.asset(
+            AppImages.logout,
+            height: 25,
+            color: AppColors.white,
+          ),
         ),
         SizedBox(
           width: 20,
@@ -169,32 +211,10 @@ class LandingScreen extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
-          FutureBuilder<UserModel>(
-            future: secureStorage.getProfile(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return DrawerHeader(
-                  decoration: BoxDecoration(
-                    color: AppColors.lightBlue,
-                  ),
-                  child: Center(
-                    child:
-                    CircularProgressIndicator(), // Show a loading indicator while fetching data
-                  ),
-                );
-              } else if (snapshot.hasError) {
-                return DrawerHeader(
-                  decoration: BoxDecoration(
-                    color: AppColors.lightBlue,
-                  ),
-                  child: Center(
-                    child: Text(
-                        'Error: ${snapshot
-                            .error}'), // Show error message if there's an error
-                  ),
-                );
-              } else if (snapshot.hasData) {
-                final user = snapshot.data!;
+
+          BlocBuilder<GetLoggedInCubit, GetLoggedInState>(
+            builder: (context, state) {
+              if (state is GetLoggedSuccess) {
                 return DrawerHeader(
                   decoration: BoxDecoration(
                     color: AppColors.lightBlue,
@@ -220,13 +240,13 @@ class LandingScreen extends StatelessWidget {
                         height: 15,
                       ),
                       Text(
-                        user.name ?? 'Name not found',
+                        state.user.name.toString(),
                         style: TextStyle(
                             color: AppColors.white,
                             fontWeight: FontWeight.bold),
                       ),
                       Text(
-                        user.email ?? 'Email not found',
+                        state.user.email.toString(),
                         style: TextStyle(
                             color: AppColors.white,
                             fontWeight: FontWeight.bold),
@@ -234,17 +254,46 @@ class LandingScreen extends StatelessWidget {
                     ],
                   ),
                 );
-              } else {
-                return DrawerHeader(
-                  decoration: BoxDecoration(
-                    color: AppColors.lightBlue,
-                  ),
-                  child: Center(
-                    child: Text(
-                        'No data available'), // Handle case where no data is present
-                  ),
-                );
               }
+              return DrawerHeader(
+                decoration: BoxDecoration(
+                  color: AppColors.lightBlue,
+                ),
+                child: Column(
+                  children: [
+                    Container(
+                      height: 70,
+                      width: 70,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(35),
+                          color: AppColors.primary),
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Image.asset(
+                          AppImages.profile_icon,
+                          height: 30,
+                          width: 30,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Text(
+                      'Name not found',
+                      style: TextStyle(
+                          color: AppColors.white,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      'Email not found',
+                      style: TextStyle(
+                          color: AppColors.white,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              );
             },
           ),
           ListTile(
@@ -255,10 +304,13 @@ class LandingScreen extends StatelessWidget {
             ),
             title: Text('My Account'),
             onTap: () {
+              AppNavigator.pop(context);
               AppNavigator.push(
                   context,
                   AccScreen(
-                    secureStorage: sl(),
+                    secureStorage: sl(), getLoggedInCubit: GetLoggedInCubit(),
+
+
                   ));
             },
           ),
@@ -270,6 +322,7 @@ class LandingScreen extends StatelessWidget {
             ),
             title: Text('Category'),
             onTap: () {
+              AppNavigator.pop(context);
               AppNavigator.push(context, CategoryScreen());
             },
           ),
@@ -281,6 +334,7 @@ class LandingScreen extends StatelessWidget {
             ),
             title: Text('Income'),
             onTap: () {
+              AppNavigator.pop(context);
               AppNavigator.push(context, IncomeScreen(secureStorage: sl()));
             },
           ),
@@ -292,6 +346,7 @@ class LandingScreen extends StatelessWidget {
             ),
             title: Text('Expense'),
             onTap: () {
+              AppNavigator.pop(context);
               AppNavigator.push(
                   context,
                   ExpenseScreen(
@@ -307,6 +362,7 @@ class LandingScreen extends StatelessWidget {
             ),
             title: Text('Change Password'),
             onTap: () {
+              AppNavigator.pop(context);
               AppNavigator.push(context, ChangePass());
             },
           ),

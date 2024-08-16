@@ -33,9 +33,24 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
+    signingConfigs {
+        release {
+            storeFile file('budgetCareKeystore.jks') // Update with your keystore file path
+            storePassword 'mobile@sekurus' // Update with your keystore store password
+            keyAlias 'mobile' // Update with your key alias
+            keyPassword 'mobile@sekurus' // Update with your key password
+        }
+        debug{
+            storeFile file('budgetCareKeystore.jks') // Update with your keystore file path
+            storePassword 'mobile@sekurus' // Update with your keystore store password
+            keyAlias 'mobile' // Update with your key alias
+            keyPassword 'mobile@sekurus' // Update w
+        }
+    }
+
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.budgetcare.budget_care"
+        applicationId = "budgetcare.com.budgetcare"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdk = flutter.minSdkVersion
@@ -46,9 +61,15 @@ android {
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.debug
+            signingConfig signingConfigs.release
+            minifyEnabled false
+            shrinkResources false
+//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            signingConfig signingConfigs.debug
+            minifyEnabled false
+            shrinkResources false
         }
     }
 
