@@ -1,6 +1,12 @@
+import 'package:budget_care/data/data_sources/local/secure_storage_repo/secure_storage.dart';
 import 'package:budget_care/data/models/statistics/data_models/graph_data_model.dart';
+import 'package:budget_care/infra/common/common_widgets/sessionexpired_popup/session_expired_dialog.dart';
+import 'package:budget_care/infra/common/helper/navigator/app_navigator.dart';
+import 'package:budget_care/infra/core/configs/constants/constants.dart';
 import 'package:budget_care/infra/core/configs/theme/app_colors.dart';
 import 'package:budget_care/presentation/home/landing/bloc/graph_data_cubit.dart';
+import 'package:budget_care/presentation/pub/login/screens/login_screen.dart';
+import 'package:budget_care/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,7 +38,11 @@ List<MonthlyData> getSampleData(List<GraphDataModel> response) {
 
 
 class IncomeExpenseChart extends StatelessWidget {
-   List<MonthlyData> data = [];
+  SecureStorage secureStorage;
+  List<MonthlyData> data = [];
+
+  IncomeExpenseChart({required this.secureStorage});
+
 
   @override
   Widget build(BuildContext context) {
@@ -109,6 +119,19 @@ class IncomeExpenseChart extends StatelessWidget {
             );
           }
 
+        if(state is GraphDataFailureState)
+          {
+            if (state.error.code == 401 || state.error.code == 403) {
+              //
+              secureStorage.storage.write(key: usertoken, value: '');
+              // AppNavigator.pushReplacement(context, LoginScreen());
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                showSessionExpiredDialog(context,(){
+                  AppNavigator.pushReplacement(context, LoginScreen());
+                });
+              });
+            }
+          }
         if(state is GraphDataLoadingState)
           {
             return Center(

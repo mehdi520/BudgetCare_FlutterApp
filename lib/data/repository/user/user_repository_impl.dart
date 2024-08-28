@@ -106,7 +106,7 @@ class UserRepositoryImpl extends UserRepository{
       if (httpResponse.response.statusCode == HttpStatus.ok) {
         print(httpResponse.response);
         if (httpResponse.data.status) {
-          return Right(httpResponse.data);
+         return Right(httpResponse.data);
         } else {
           return Left(
               BaseErrorModel(status: false,message: httpResponse.data.message,code: httpResponse.response.statusCode)

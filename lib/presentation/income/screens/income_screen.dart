@@ -4,6 +4,7 @@ import 'package:budget_care/data/models/income/data_models/income_page_model.dar
 import 'package:budget_care/infra/common/invoicepdf/pdf_helper.dart';
 import 'package:budget_care/infra/common/invoicepdf/report_generator.dart';
 import 'package:budget_care/presentation/category/bloc/category_cubit.dart';
+import 'package:budget_care/presentation/category/screen/category_screen.dart';
 import 'package:budget_care/presentation/income/bloc/income_cat_filter_cubit.dart';
 import 'package:budget_care/presentation/income/bloc/income_cubit.dart';
 import 'package:budget_care/presentation/income/bloc/income_day_filter_cubit.dart';
@@ -32,7 +33,7 @@ class IncomeScreen extends StatelessWidget {
   final CatModel allCategory = CatModel(
       id: '0', title: 'ALL'); // Create a custom "ALL" category
 
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -322,9 +323,16 @@ class IncomeScreen extends StatelessWidget {
               Expanded(child:
               InkWell(
                 onTap: (){
-                  AppBottomsheet.display(mcontext, AddIncomeBts(onIncomeAdded: () {
+                  if(_categories.length > 1) {
+                    AppBottomsheet.display(mcontext, AddIncomeBts(onIncomeAdded: () {
+                    }, rootContext: mcontext,));
+                  }
+                  else
+                  {
+                    context.flushBarErrorMessage(message: 'Please add category from home menu');
 
-                  }, rootContext: mcontext,));
+                  }
+
                 },
                 child: Container(
                   child: Column(

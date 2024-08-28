@@ -96,7 +96,7 @@ class AddExpenseBts extends StatelessWidget {
                 SizedBox(
                   height: context.mediaQueryHeight * 0.02,
                 ),
-                Text("Income Description",
+                Text("Expense Description",
                     style: TextStyle(
                         color: AppColors.primary,
                         fontWeight: FontWeight.normal)),
@@ -104,14 +104,14 @@ class AddExpenseBts extends StatelessWidget {
                     ctrl: _incDescCtrl,
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'Income description is required.';
+                        return 'Expense description is required.';
                       }
                     },
-                    hintText: 'Income Description'),
+                    hintText: 'Expense Description'),
                 SizedBox(
                   height: context.mediaQueryHeight * 0.02,
                 ),
-                Text("Income Amount",
+                Text("Expense Amount",
                     style: TextStyle(
                         color: AppColors.primary,
                         fontWeight: FontWeight.normal)),
@@ -120,10 +120,10 @@ class AddExpenseBts extends StatelessWidget {
                     ctrl: _amountCtrl,
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'Income amount is required.';
+                        return 'Expense amount is required.';
                       }
                     },
-                    hintText: 'Income Amount'),
+                    hintText: 'Expense Amount'),
                 SizedBox(
                   height: context.mediaQueryHeight * 0.02,
                 ),

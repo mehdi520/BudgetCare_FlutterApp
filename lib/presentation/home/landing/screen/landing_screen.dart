@@ -116,7 +116,7 @@ class LandingScreen extends StatelessWidget {
                             Expanded(
                                 child: Container(
                                     padding: EdgeInsets.all(15),
-                                    child: IncomeExpenseChart()
+                                    child: IncomeExpenseChart(secureStorage: secureStorage,)
                                   //end here
                                 )),
                             BlocBuilder<UserTotalCubit, UserTotalState>(

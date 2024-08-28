@@ -4,6 +4,7 @@ import 'package:budget_care/data/models/income/data_models/income_page_model.dar
 import 'package:budget_care/infra/common/invoicepdf/pdf_helper.dart';
 import 'package:budget_care/infra/common/invoicepdf/report_generator.dart';
 import 'package:budget_care/presentation/category/bloc/category_cubit.dart';
+import 'package:budget_care/presentation/category/screen/category_screen.dart';
 import 'package:budget_care/presentation/expense/blocs/expense_cubit.dart';
 import 'package:budget_care/presentation/expense/widgets/add_expense_bts.dart';
 import 'package:budget_care/presentation/income/bloc/income_cat_filter_cubit.dart';
@@ -277,8 +278,8 @@ class ExpenseScreen extends StatelessWidget {
                           incomePageModel!,
                           userProfile.name,
                           userProfile.email,
-                          'INCOME DETAIL REPORT',
-                          'Below are the income details for the ' + selectedCat!.title.toString() + ' category from ' + DateUtil.formatDisplayDate( DateTime.parse(selectedStartDate)) + " to " + DateUtil.formatDisplayDate( DateTime.parse(selectedEndDate))
+                          'EXPENSE DETAIL REPORT',
+                          'Below are the expense details for the ' + selectedCat!.title.toString() + ' category from ' + DateUtil.formatDisplayDate( DateTime.parse(selectedStartDate)) + " to " + DateUtil.formatDisplayDate( DateTime.parse(selectedEndDate))
                       );
                       PdfHelper.openFile(context,pdfFile);
                     }
@@ -323,16 +324,24 @@ class ExpenseScreen extends StatelessWidget {
                 Expanded(child:
                 InkWell(
                   onTap: (){
-                    AppBottomsheet.display(mcontext, AddExpenseBts(onIncomeAdded: () {
+                    if(_categories.length > 1) {
+                      AppBottomsheet.display(
+                          mcontext, AddExpenseBts(onIncomeAdded: () {
 
-                    }, rootContext: mcontext,));
+                      }, rootContext: mcontext,));
+                    }
+                    else
+                      {
+                        context.flushBarErrorMessage(message: 'Please add category from home menu');
+
+                      }
                   },
                   child: Container(
                     child: Column(
                       children: [
                         Image.asset(AppImages.addnew,height: 35,width: 35,),
                         SizedBox(height: 2,),
-                        Text("ADD INCOME",style: TextStyle(color: AppColors.primary,fontWeight: FontWeight.bold,fontSize: 10),),
+                        Text("ADD EXPENSE",style: TextStyle(color: AppColors.primary,fontWeight: FontWeight.bold,fontSize: 10),),
                       ],
                     ),
                   ),

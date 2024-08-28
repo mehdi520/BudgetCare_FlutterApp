@@ -23,48 +23,65 @@ class CategoryScreen extends StatelessWidget {
           builder: (context, state) {
             if(state is CategoryLoadedState)
               {
-                return ListView.builder(
-                    itemCount: state.response.data?.length != null ? state.response.data!.length! : 0,
-                    itemBuilder: (context, index) {
-
-                      final cat = state.response!.data![index];
-                      return Card(
-                        margin: EdgeInsets.only(left: 15, top: 15, right: 15),
-                        color: AppColors.white,
-                        child: ListTile(
-                            trailing: IconButton(
-                              icon: Icon(Icons.delete, color: Colors.red,),
-                              onPressed: () async {
-                                final confirmed = await showConfirmationDialog(
-                                  context,
-                                  title: 'Confirm Delete',
-                                  content: 'Are you sure you want to delete this category?',
-                                  confirmButtonText: 'Delete',
-                                  cancelButtonText: 'Cancel',
-                                );
-                                if (confirmed == true) {
-                                  context.read<CategoryCubit>().deleteCategory(cat.id);
-                                }
-                              },
-                            ),
-                            title: Text(cat.title ?? ""),
-                            subtitle: Text(cat.description ?? ""),
-                            onTap: () {
-                              AppBottomsheet.display(context, CategoryUpdateFormWidget(onCategoryUpdated: () {
-                                context.read<CategoryCubit>().getCategories();
-                              },cat: cat,));
-                            }
-                            ),
-                      );
-                    });
+                print('CategoryLoadedState');
+                if(state.response.data!.length > 0) {
+                  return ListView.builder(
+                      itemCount: state.response.data?.length != null ? state
+                          .response.data!.length! : 0,
+                      itemBuilder: (context, index) {
+                        final cat = state.response!.data![index];
+                        return Card(
+                          margin: EdgeInsets.only(left: 15, top: 15, right: 15),
+                          color: AppColors.white,
+                          child: ListTile(
+                              trailing: IconButton(
+                                icon: Icon(Icons.delete, color: Colors.red,),
+                                onPressed: () async {
+                                  final confirmed = await showConfirmationDialog(
+                                    context,
+                                    title: 'Confirm Delete',
+                                    content: 'Are you sure you want to delete this category?',
+                                    confirmButtonText: 'Delete',
+                                    cancelButtonText: 'Cancel',
+                                  );
+                                  if (confirmed == true) {
+                                    context.read<CategoryCubit>()
+                                        .deleteCategory(cat.id);
+                                  }
+                                },
+                              ),
+                              title: Text(cat.title ?? ""),
+                              subtitle: Text(cat.description ?? ""),
+                              onTap: () {
+                                AppBottomsheet.display(context,
+                                    CategoryUpdateFormWidget(
+                                      onCategoryUpdated: () {
+                                        context.read<CategoryCubit>()
+                                            .getCategories();
+                                      }, cat: cat,));
+                              }
+                          ),
+                        );
+                      });
+                }
+                else
+                  {
+                    return Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(18.0),
+                          child: Center(child: Text("No category found.Please click below plus icon to create a new category.",textAlign: TextAlign.center,)),
+                        ));
+                  }
 
               }
             if(state is CategoryLoadingState)
               {
+                print('CategoryLoadingState');
                 return Center(child: CircularProgressIndicator(),);
               }
             if(state is CategoryFailureState)
               {
+                print('CategoryFailureState');
                 return Center(child: Text(state.error.message ?? ""));
               }
             if(state is CategoryDeletedSuccessState)

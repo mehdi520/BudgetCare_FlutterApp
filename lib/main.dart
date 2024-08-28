@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) =>
           SplashCubit(sl())
-            ..appStarted(),
+            ..appStarted()
         ),
         BlocProvider(
           create: (context) => GetLoggedInCubit()..getLoggedInUser(),
