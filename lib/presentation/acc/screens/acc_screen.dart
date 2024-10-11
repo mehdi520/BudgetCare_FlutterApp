@@ -12,9 +12,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class AccScreen extends StatelessWidget {
   SecureStorage secureStorage;
   UserModel? user;
-  GetLoggedInCubit getLoggedInCubit;
 
-  AccScreen({super.key, required this.secureStorage,required this.getLoggedInCubit});
+
+  AccScreen({super.key, required this.secureStorage});
 
   @override
   Widget build(BuildContext context) {
@@ -40,8 +40,8 @@ class AccScreen extends StatelessWidget {
                 user!.name = _nameCtr.text;
                 user!.phone = _phoneCtrl.text;
                 await secureStorage.saveProfile(user);
-                // context.read<GetLoggedInCubit>().getLoggedInUser();
-                getLoggedInCubit.getLoggedInUser();
+                 context.read<GetLoggedInCubit>().getLoggedInUser();
+               // getLoggedInCubit.getLoggedInUser();
 
                 context.flushBarSuccessMessage(
                     message: "Profile updated successfully.");

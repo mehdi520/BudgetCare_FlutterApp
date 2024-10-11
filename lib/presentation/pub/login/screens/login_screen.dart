@@ -1,7 +1,9 @@
 
+import 'package:budget_care/data/data_sources/local/secure_storage_repo/secure_storage.dart';
 import 'package:budget_care/data/models/auth_models/sign_up_req_model.dart';
 import 'package:budget_care/domain/auth/usecases/login_usecase.dart';
 import 'package:budget_care/infra/core/configs/assets/app_images.dart';
+import 'package:budget_care/infra/core/configs/routes/app_routes.dart';
 import 'package:budget_care/presentation/home/landing/screen/landing_screen.dart';
 import 'package:budget_care/presentation/pub/forgot_pass/forgot_pass_screen.dart';
 import 'package:budget_care/presentation/pub/signup/screen/sign_up_screen.dart';
@@ -32,8 +34,7 @@ class LoginScreen extends StatelessWidget {
               context.flushBarSuccessMessage(message: "Login successfully.");
               await Future.delayed(const Duration(seconds: 2));
 
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => LandingScreen(secureStorage: sl(),)));
+              Navigator.pushReplacementNamed(context, AppRoutes.landingRoute,arguments: sl<SecureStorage>());
             }
           },
           child: SingleChildScrollView(
@@ -123,7 +124,8 @@ class LoginScreen extends StatelessWidget {
       children: [
         TextButton(
           onPressed: () {
-            AppNavigator.push(context, ForgotPassScreen());
+            Navigator.pushNamed(context, AppRoutes.forgotRoute);
+
           },
           child: Text('Forget Password',
               style: TextStyle(color: AppColors.primary)),
@@ -144,8 +146,7 @@ class LoginScreen extends StatelessWidget {
       children: [
         TextButton(
           onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => SignUpScreen()));
+            Navigator.pushNamed(context, AppRoutes.registerRoute);
           },
           child: Text('Do not have an Account?',
               style: TextStyle(color: AppColors.primary)),

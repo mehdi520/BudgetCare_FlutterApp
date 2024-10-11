@@ -13,11 +13,7 @@ class CategoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-      CategoryCubit()
-        ..getCategories(),
-      child: Scaffold(
+    return Scaffold(
         appBar: const BasicAppBar(),
         body: BlocBuilder<CategoryCubit, CategoryState>(
           builder: (context, state) {
@@ -92,8 +88,7 @@ class CategoryScreen extends StatelessWidget {
           },
         ),
         floatingActionButton: _floatingAddCategory(context),
-      ),
-    );
+      );
   }
 
   Widget _floatingAddCategory(BuildContext scContext) {

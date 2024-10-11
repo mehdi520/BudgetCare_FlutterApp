@@ -25,7 +25,10 @@ import 'package:budget_care/domain/user/usecases/change_pass_usecase.dart';
 import 'package:budget_care/domain/user/usecases/get_graph_data_usecase.dart';
 import 'package:budget_care/domain/user/usecases/get_user_totals_usecase.dart';
 import 'package:budget_care/domain/user/usecases/update_profile_usecase.dart';
+import 'package:budget_care/presentation/home/landing/bloc/graph_data_cubit.dart';
+import 'package:budget_care/presentation/home/landing/bloc/user_total_cubit.dart';
 import 'package:dio/io.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:dio/dio.dart';
@@ -36,6 +39,11 @@ final sl = GetIt.instance;
 
 
 Future<void> initializedDepencies() async {
+
+  // Register Cubits or BLoCs
+  sl.registerFactory(() => UserTotalCubit());
+  sl.registerFactory(() => GraphDataCubit());
+
   // Register SecureStorage
   final secureStorage = SecureStorage();
   // Register SecureStorage instance
@@ -47,20 +55,30 @@ Future<void> initializedDepencies() async {
   }
 
   final dio = Dio();
-  final securityContext = SecurityContext(withTrustedRoots: true);
-  final cert = await rootBundle.load('assets/cert/certificate.pem');
-  print(cert);
-  print(cert.buffer.asUint8List());
+  if(kIsWeb)
+    {
+      dio.options = BaseOptions(
+        baseUrl: APIBaseURL,
+        connectTimeout: Duration(minutes: 2),
+        receiveTimeout: Duration(minutes: 2),
+      );
 
-  securityContext.setTrustedCertificatesBytes(cert.buffer.asUint8List());
-  final httpClient = HttpClient(context: securityContext);
+    }
+  else {
+    final securityContext = SecurityContext(withTrustedRoots: true);
+    final cert = await rootBundle.load('assets/cert/certificate.pem');
+    print(cert);
+    print(cert.buffer.asUint8List());
+
+    securityContext.setTrustedCertificatesBytes(cert.buffer.asUint8List());
+    final httpClient = HttpClient(context: securityContext);
 
 
-  dio.httpClientAdapter = IOHttpClientAdapter()
-    ..createHttpClient = () {
-      return httpClient;
-    };
-
+    dio.httpClientAdapter = IOHttpClientAdapter()
+      ..createHttpClient = () {
+        return httpClient;
+      };
+  }
 
 
   // final httpClientAdapter = HttpClientAdapter();

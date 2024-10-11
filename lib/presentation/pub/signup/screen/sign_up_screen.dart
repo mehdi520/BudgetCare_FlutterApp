@@ -31,7 +31,7 @@ class SignUpScreen extends StatelessWidget {
             if(state is ButtonSuccessState) {
               context.flushBarSuccessMessage(message: "Signup successfully.");
              await Future.delayed(const Duration(seconds: 2));
-             AppNavigator.pop(context);
+             Navigator.pop(context);
             }
           },
           child: SingleChildScrollView(

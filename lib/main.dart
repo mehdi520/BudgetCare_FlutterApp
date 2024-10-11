@@ -1,6 +1,7 @@
 import 'package:budget_care/infra/core/blocs/get_login_user/get_logged_in_cubit.dart';
+import 'package:budget_care/infra/core/configs/routes/app_routes.dart';
+import 'package:budget_care/presentation/category/bloc/category_cubit.dart';
 import 'package:budget_care/presentation/pub/splash/bloc/splash_cubit.dart';
-import 'package:budget_care/presentation/pub/splash/screens/splash_screen.dart';
 import 'package:budget_care/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,11 +28,16 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => GetLoggedInCubit()..getLoggedInUser(),
         ),
+        BlocProvider(
+            create: (context) => CategoryCubit()..getCategories()
+        ),
+
       ],
       child: MaterialApp(
           theme: AppTheme.appTheme,
           debugShowCheckedModeBanner: false,
-          home: const SplashScreen()
+          initialRoute: AppRoutes.splashRoute,
+          onGenerateRoute: AppRoutes.generateRoute,
       ),
     );
   }

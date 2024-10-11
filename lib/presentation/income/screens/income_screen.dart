@@ -3,8 +3,11 @@ import 'package:budget_care/data/models/category/data_models/cat_model/cat_model
 import 'package:budget_care/data/models/income/data_models/income_page_model.dart';
 import 'package:budget_care/infra/common/invoicepdf/pdf_helper.dart';
 import 'package:budget_care/infra/common/invoicepdf/report_generator.dart';
+import 'package:budget_care/infra/core/configs/routes/app_routes.dart';
 import 'package:budget_care/presentation/category/bloc/category_cubit.dart';
 import 'package:budget_care/presentation/category/screen/category_screen.dart';
+import 'package:budget_care/presentation/home/landing/bloc/graph_data_cubit.dart';
+import 'package:budget_care/presentation/home/landing/bloc/user_total_cubit.dart';
 import 'package:budget_care/presentation/income/bloc/income_cat_filter_cubit.dart';
 import 'package:budget_care/presentation/income/bloc/income_cubit.dart';
 import 'package:budget_care/presentation/income/bloc/income_day_filter_cubit.dart';
@@ -44,10 +47,7 @@ class IncomeScreen extends StatelessWidget {
         providers: [
           BlocProvider(create: (context) => IncomeDayFilterCubit()),
           BlocProvider(create: (context) => IncomeCatFilterCubit()),
-          BlocProvider(create: (context) => CategoryCubit()..getCategories()),
           BlocProvider(create: (context) => IncomeCubit()..getIncomes(getIncomeReq(context))),
-
-
         ],
         child: Column(
           children: [
@@ -325,12 +325,25 @@ class IncomeScreen extends StatelessWidget {
                 onTap: (){
                   if(_categories.length > 1) {
                     AppBottomsheet.display(mcontext, AddIncomeBts(onIncomeAdded: () {
+                      print('incomeadded');
+                      context.read<UserTotalCubit>().getUserTotalData();
+                      context.read<GraphDataCubit>().getGraphData();
+                      context.read<IncomeCubit>().getIncomes(
+                          getIncomeReq(context)
+                      );
                     }, rootContext: mcontext,));
                   }
                   else
                   {
-                    context.flushBarErrorMessage(message: 'Please add category from home menu');
-
+                    context.flushBarErrorMessage(message: 'Please add category first');
+                  Future.delayed(Duration(seconds: 1), ()
+                    {
+                      Navigator.pushNamed(
+                          context,
+                          AppRoutes.categoryRoute,
+                          arguments: context.read<CategoryCubit>()
+                      );
+                    });
                   }
 
                 },

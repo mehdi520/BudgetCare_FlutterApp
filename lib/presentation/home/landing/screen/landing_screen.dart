@@ -1,20 +1,18 @@
 import 'package:budget_care/data/data_sources/local/secure_storage_repo/secure_storage.dart';
-import 'package:budget_care/data/models/user/data_model/user_model.dart';
 import 'package:budget_care/infra/common/common_export.dart';
 import 'package:budget_care/infra/common/common_widgets/sessionexpired_popup/session_expired_dialog.dart';
 import 'package:budget_care/infra/core/blocs/get_login_user/get_logged_in_cubit.dart';
+import 'package:budget_care/infra/core/configs/routes/app_routes.dart';
+import 'package:budget_care/infra/core/configs/routes/routes_arguments_model/income_route_arg_model.dart';
 import 'package:budget_care/presentation/acc/screens/acc_screen.dart';
 import 'package:budget_care/presentation/acc/screens/change_pass.dart';
-import 'package:budget_care/presentation/category/screen/category_screen.dart';
+import 'package:budget_care/presentation/category/bloc/category_cubit.dart';
 import 'package:budget_care/presentation/expense/screens/expense_screen.dart';
 import 'package:budget_care/presentation/home/landing/bloc/graph_data_cubit.dart';
 import 'package:budget_care/presentation/home/landing/bloc/user_total_cubit.dart';
 import 'package:budget_care/presentation/home/landing/widgets/bar_chart.dart';
 import 'package:budget_care/presentation/income/screens/income_screen.dart';
-import 'package:budget_care/presentation/pub/login/bloc/login_cubit.dart';
 import 'package:budget_care/presentation/pub/login/screens/login_screen.dart';
-import 'package:budget_care/presentation/reports/screens/report_screen.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -40,14 +38,10 @@ class LandingScreen extends StatelessWidget {
             MultiBlocProvider(
               providers: [
                 BlocProvider(
-                  create: (context) =>
-                  UserTotalCubit()
-                    ..getUserTotalData(),
+                  create: (context) => UserTotalCubit()..getUserTotalData(),
                 ),
                 BlocProvider(
-                  create: (context) =>
-                  GraphDataCubit()
-                    ..getGraphData(),
+                  create: (context) => GraphDataCubit()..getGraphData(),
                 ),
               ],
               child: Column(
@@ -63,109 +57,149 @@ class LandingScreen extends StatelessWidget {
                     listener: (contextt, state) {
                       if (state is UserTotalFailureState) {
                         if (state.error.code == 401) {
-                         //
-                          secureStorage.storage.write(key: usertoken, value: '');
-                         // AppNavigator.pushReplacement(context, LoginScreen());
-                          showSessionExpiredDialog(context,(){
-                            AppNavigator.pushReplacement(context, LoginScreen());
+                          //
+                          secureStorage.storage
+                              .write(key: usertoken, value: '');
+                          // AppNavigator.pushReplacement(context, LoginScreen());
+                          showSessionExpiredDialog(context, () {
+                            AppNavigator.pushReplacement(
+                                context, LoginScreen());
                           });
                         }
                       }
                     },
                     builder: (context, state) {
-                          if (state is UserTotalLoadedState) {
-                            return Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                _monthlyTotal('YOUR INCOME', state.response
-                                    .totalThisMonthIncome.toString()),
-                                IconButton(onPressed: () {
-                                  context.read<UserTotalCubit>()
+                      if (state is UserTotalLoadedState) {
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            _monthlyTotal('YOUR INCOME',
+                                state.response.totalThisMonthIncome.toString()),
+                            IconButton(
+                                onPressed: () {
+                                  context
+                                      .read<UserTotalCubit>()
                                       .getUserTotalData();
                                   context.read<GraphDataCubit>().getGraphData();
-                                }, icon: Icon(Icons.refresh_outlined)),
-                                _monthlyTotal('YOUR EXPENSE', state.response
-                                    .totalThisMonthExpense.toString()),
-                              ],
-                            );
-                          }
+                                },
+                                icon: Icon(Icons.refresh_outlined)),
+                            _monthlyTotal(
+                                'YOUR EXPENSE',
+                                state.response.totalThisMonthExpense
+                                    .toString()),
+                          ],
+                        );
+                      }
 
-
-                          return Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              _monthlyTotal('YOUR INCOME', '0'),
-                              IconButton(onPressed: () {
-                                context.read<UserTotalCubit>()
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          _monthlyTotal('YOUR INCOME', '0'),
+                          IconButton(
+                              onPressed: () {
+                                context
+                                    .read<UserTotalCubit>()
                                     .getUserTotalData();
                                 context.read<GraphDataCubit>().getGraphData();
-                              }, icon: Icon(Icons.refresh_outlined)),
-                              _monthlyTotal('YOUR EXPENSE', '0'),
-                            ],
-                          );
-                        },
-                      ),
-
-
+                              },
+                              icon: Icon(Icons.refresh_outlined)),
+                          _monthlyTotal('YOUR EXPENSE', '0'),
+                        ],
+                      );
+                    },
+                  ),
                   Expanded(
                       child: Container(
-                        // color: AppColors.primary,
-                        child: Column(
-                          children: [
-                            SizedBox(height: 20,),
-                            Expanded(
-                                child: Container(
-                                    padding: EdgeInsets.all(15),
-                                    child: IncomeExpenseChart(secureStorage: secureStorage,)
-                                  //end here
-                                )),
-                            BlocBuilder<UserTotalCubit, UserTotalState>(
-                              builder: (context, state) {
-                                if (state is UserTotalLoadedState) {
-                                  return Row(
-                                    mainAxisAlignment: MainAxisAlignment
-                                        .spaceAround,
-                                    children: [
-                                      _indicators(),
-                                      _totalYear('Total Income',
-                                          state.response.totalThisYearIncome
-                                              .toString()),
-                                      _totalYear('Total Expense',
-                                          state.response.totalThisMonthExpense
-                                              .toString()),
-                                    ],
-                                  );
-                                }
-                                return Row(
-                                  mainAxisAlignment: MainAxisAlignment
-                                      .spaceAround,
-                                  children: [
-                                    _indicators(),
-                                    _totalYear('Total Income', '0'),
-                                    _totalYear('Total Expense', '0'),
-                                  ],
-                                );
-                              },
-                            )
-                          ],
+                    // color: AppColors.primary,
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 20,
                         ),
-                      )),
+                        Expanded(
+                            child: Container(
+                                padding: EdgeInsets.all(15),
+                                child: IncomeExpenseChart(
+                                  secureStorage: secureStorage,
+                                )
+                                //end here
+                                )),
+                        BlocBuilder<UserTotalCubit, UserTotalState>(
+                          builder: (context, state) {
+                            if (state is UserTotalLoadedState) {
+                              return Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  _indicators(),
+                                  _totalYear(
+                                      'Total Income',
+                                      state.response.totalThisYearIncome
+                                          .toString()),
+                                  _totalYear(
+                                      'Total Expense',
+                                      state.response.totalThisYearExpense
+                                          .toString()),
+                                ],
+                              );
+                            }
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                _indicators(),
+                                _totalYear('Total Income', '0'),
+                                _totalYear('Total Expense', '0'),
+                              ],
+                            );
+                          },
+                        )
+                      ],
+                    ),
+                  )),
                   SizedBox(
                     height: context.mediaQueryHeight * 0.05,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      _bottomIconButton('INCOME', AppImages.income, () {
-                        AppNavigator.push(
-                            context, IncomeScreen(secureStorage: sl()));
-                      }),
-                      _bottomIconButton('EXPENSE', AppImages.expense, () {
-                        AppNavigator.push(
-                            context, ExpenseScreen(secureStorage: sl()));
-                      }),
-                    ],
-                  ),
+                  Builder(builder: (context) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        _bottomIconButton('INCOME', AppImages.income, () {
+                          final userTotalCubit = context.read<
+                              UserTotalCubit>(); // Obtain instance of UserTotalCubit
+                          final graphDataCubit = context.read<
+                              GraphDataCubit>(); // Obtain instance of GraphDataCubit
+                          final secureStorage = sl<SecureStorage>(); //
+
+                          Navigator.pushNamed(
+                            context,
+                            AppRoutes.incomeRoute,
+                            arguments: IncomeRouteArgModel(
+                              userTotalCubit: userTotalCubit,
+                              graphDataCubit: graphDataCubit,
+                              secureStorage: secureStorage,
+                            ),
+                          );
+                        }),
+                        _bottomIconButton('EXPENSE', AppImages.expense, () {
+                          final userTotalCubit = context.read<
+                              UserTotalCubit>(); // Obtain instance of UserTotalCubit
+                          final graphDataCubit = context.read<
+                              GraphDataCubit>(); // Obtain instance of GraphDataCubit
+                          final secureStorage = sl<SecureStorage>(); //
+
+                          Navigator.pushNamed(
+                            context,
+                            AppRoutes.expenseRoute,
+                            arguments: IncomeRouteArgModel(
+                              userTotalCubit: userTotalCubit,
+                              graphDataCubit: graphDataCubit,
+                              secureStorage: secureStorage,
+                            ),
+                          );
+                        }),
+                      ],
+                    );
+                  }),
                   SizedBox(
                     height: context.mediaQueryHeight * 0.07,
                   )
@@ -189,7 +223,7 @@ class LandingScreen extends StatelessWidget {
       ),
       actions: [
         InkWell(
-          onTap: (){
+          onTap: () {
             secureStorage.storage.write(key: usertoken, value: '');
             AppNavigator.pushReplacement(context, LoginScreen());
           },
@@ -211,7 +245,6 @@ class LandingScreen extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
-
           BlocBuilder<GetLoggedInCubit, GetLoggedInState>(
             builder: (context, state) {
               if (state is GetLoggedSuccess) {
@@ -282,14 +315,12 @@ class LandingScreen extends StatelessWidget {
                     Text(
                       'Name not found',
                       style: TextStyle(
-                          color: AppColors.white,
-                          fontWeight: FontWeight.bold),
+                          color: AppColors.white, fontWeight: FontWeight.bold),
                     ),
                     Text(
                       'Email not found',
                       style: TextStyle(
-                          color: AppColors.white,
-                          fontWeight: FontWeight.bold),
+                          color: AppColors.white, fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
@@ -305,13 +336,19 @@ class LandingScreen extends StatelessWidget {
             title: Text('My Account'),
             onTap: () {
               AppNavigator.pop(context);
-              AppNavigator.push(
-                  context,
-                  AccScreen(
-                    secureStorage: sl(), getLoggedInCubit: GetLoggedInCubit(),
 
+              final loggeinCubit = context.read<
+                  GetLoggedInCubit>(); // Obtain instance of UserTotalCubit
+              final secureStorage = sl<SecureStorage>(); //
 
-                  ));
+              Navigator.pushNamed(
+                context,
+                AppRoutes.accRoute,
+                arguments: IncomeRouteArgModel(
+                  getLoggedInCubit: loggeinCubit,
+                  secureStorage: secureStorage,
+                ),
+              );
             },
           ),
           ListTile(
@@ -323,7 +360,10 @@ class LandingScreen extends StatelessWidget {
             title: Text('Category'),
             onTap: () {
               AppNavigator.pop(context);
-              AppNavigator.push(context, CategoryScreen());
+              // AppNavigator.push(context, CategoryScreen());
+
+              Navigator.pushNamed(context, AppRoutes.categoryRoute,
+                  arguments: context.read<CategoryCubit>());
             },
           ),
           ListTile(
@@ -389,7 +429,7 @@ class LandingScreen extends StatelessWidget {
         child: Text(
           DateUtil.formatDisplayDate(DateTime.now()),
           style:
-          TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
+              TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
         ),
       ),
     );
@@ -401,7 +441,7 @@ class LandingScreen extends StatelessWidget {
         Text(
           heading,
           style:
-          TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
+              TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
         ),
         Text(
           'This month so far',
@@ -416,14 +456,14 @@ class LandingScreen extends StatelessWidget {
         Text(
           amount,
           style:
-          TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
+              TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
         ),
       ],
     );
   }
 
-  Widget _bottomIconButton(String title, String imageName,
-      VoidCallback onTapCallback) {
+  Widget _bottomIconButton(
+      String title, String imageName, VoidCallback onTapCallback) {
     return InkWell(
       onTap: () {
         onTapCallback();
