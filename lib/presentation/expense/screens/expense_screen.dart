@@ -29,7 +29,7 @@ class ExpenseScreen extends StatelessWidget {
   ExpenseScreen({super.key, required this.secureStorage});
 
   IncomePageModel? incomePageModel = null;
-  int pageSize = 10;
+  int pageSize = 10000;
   int selectedDayIndex = 1;
   String selectedStartDate = "";
   String selectedEndDate = "";
