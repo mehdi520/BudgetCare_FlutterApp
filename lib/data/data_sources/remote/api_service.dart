@@ -22,15 +22,15 @@ part 'api_service.g.dart';
 abstract class ApiService {
   factory ApiService(Dio dio) = _ApiService;
 
-  @POST('api/auth/signup')
+  @POST('api/pub/Register')
   Future<HttpResponse<BaseResponseModel>> signup(
       {@Body() required SignUpReqModel req});
 
-  @POST('api/auth/signin')
+  @POST('api/pub/login')
   Future<HttpResponse<LoginResModel>> signin(
       {@Body() required SignUpReqModel req});
 
-  @GET('api/user/me')
+  @GET('api/User/GetProfile')
   Future<HttpResponse<GetProfileResModel>> getProfile();
 
   @PUT('api/user/updateProfile')
@@ -50,19 +50,19 @@ abstract class ApiService {
   @GET('api/category/getUserCats')
   Future<HttpResponse<GetUserCatsResModel>> getUserCats();
 
-  @POST('api/category/addOrUpdateCat')
+  @POST('api/Category/addOrUpdateCat')
   Future<HttpResponse<BaseResponseModel>> addOrUpdateCat(
       {@Body() required CatModel req});
 
   @DELETE('api/category/deleteCat/{id}')
   Future<HttpResponse<BaseResponseModel>> deleteCat(
-      {@Path() required String id});
+      {@Path() required int id});
 
   @GET('api/income/getIncomes')
   Future<HttpResponse<GetIncomesResModel>> getIncomes({
     @Query('startDate') required String startDate,
     @Query('endDate') required String endDate,
-    @Query('categoryId') String? categoryId,
+    @Query('categoryId') int? categoryId,
     @Query('page') required int page,
     @Query('limit') required int limit,
   });
@@ -79,7 +79,7 @@ abstract class ApiService {
   Future<HttpResponse<GetIncomesResModel>> getExpense({
     @Query('startDate') required String startDate,
     @Query('endDate') required String endDate,
-    @Query('categoryId') String? categoryId,
+    @Query('categoryId') int? categoryId,
     @Query('page') required int page,
     @Query('limit') required int limit,
   });

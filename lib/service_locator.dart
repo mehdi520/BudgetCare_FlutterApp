@@ -66,11 +66,11 @@ Future<void> initializedDepencies() async {
     }
   else {
     final securityContext = SecurityContext(withTrustedRoots: true);
-    final cert = await rootBundle.load('assets/cert/certificate.pem');
-    print(cert);
-    print(cert.buffer.asUint8List());
+    // final cert = await rootBundle.load('assets/cert/certificate.pem');
+    // print(cert);
+    // print(cert.buffer.asUint8List());
 
-    securityContext.setTrustedCertificatesBytes(cert.buffer.asUint8List());
+    // securityContext.setTrustedCertificatesBytes(cert.buffer.asUint8List());
     final httpClient = HttpClient(context: securityContext);
 
 

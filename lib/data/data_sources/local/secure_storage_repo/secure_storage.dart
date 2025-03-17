@@ -35,7 +35,7 @@ class SecureStorage{
         await storage.write(key: kName, value: data.name);
         await storage.write(key: kEmail, value: data.email);
         await storage.write(key: kPhone, value: data.phone);
-        await storage.write(key: kId, value: data.id);
+        await storage.write(key: kId, value: data.id.toString());
         await storage.write(key: kcreatedAt, value: data.createdAt);
 
         return true;
@@ -57,6 +57,7 @@ class SecureStorage{
 
     // Return UserModel with fetched values
     return UserModel(
+      id: id,
       name: name,
       email: email,
       phone: phone,

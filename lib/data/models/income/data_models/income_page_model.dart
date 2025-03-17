@@ -6,21 +6,17 @@ part 'income_page_model.g.dart';
 @JsonSerializable()
 class IncomePageModel extends Equatable {
   List<IncomeModel> data;
-  int total;
-  int page;
-  int totalAmount;
-  int limit;
+  int TotalPage;
+
 
   IncomePageModel({
     required this.data,
-    required this.total,
-    required this.page,
-    required this.totalAmount,
-    required this.limit
+    required this.TotalPage,
+
   });
 
   @override
-  List<Object?> get props => [data,total,page,totalAmount,limit];
+  List<Object?> get props => [data,TotalPage];
 
  factory IncomePageModel.fromJson(Map<String,dynamic> json) => _$IncomePageModelFromJson(json);
  Map<String,dynamic> toJson() => _$IncomePageModelToJson(this);

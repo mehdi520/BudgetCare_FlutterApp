@@ -37,7 +37,7 @@ class ExpenseScreen extends StatelessWidget {
 
   List<CatModel> _categories = [];
   final CatModel allCategory =
-      CatModel(id: '0', title: 'ALL'); // Create a custom "ALL" category
+      CatModel(Id: 0, Title: 'ALL'); // Create a custom "ALL" category
 
   @override
   Widget build(BuildContext context) {
@@ -98,8 +98,8 @@ class ExpenseScreen extends StatelessWidget {
                                     }
                                   },
                                 ),
-                                title: Text(cat.description ?? ""),
-                                subtitle: Text(cat.amount.toString() ?? ""),
+                                title: Text(cat.Desciption ?? ""),
+                                subtitle: Text(cat.Amount.toString() ?? ""),
                                 onTap: () {
                                   // AppBottomsheet.display(context, CategoryUpdateFormWidget(onCategoryUpdated: () {
                                   //   context.read<CategoryCubit>().getCategories();
@@ -229,31 +229,31 @@ class ExpenseScreen extends StatelessWidget {
                         selectedCat = cat;
                         context
                             .read<IncomeCatFilterCubit>()
-                            .selectCatFilter(cat.id);
+                            .selectCatFilter(cat.Id);
                         context.read<ExpenseCubit>().getExpense(
                             getIncomeReq(context)
                             // DateUtil.getIncomeReqModel(selectedDayIndex, 1, pageSize,context.read<IncomeCatFilterCubit>().selectedCatId,selectedStartDate,selectedEndDate)!
                             );
                       },
-                      child: BlocBuilder<IncomeCatFilterCubit, String>(
+                      child: BlocBuilder<IncomeCatFilterCubit, int>(
                         builder: (context, state) {
                           return Container(
                             height: 50,
                             color: context
                                         .read<IncomeCatFilterCubit>()
                                         .selectedCatId ==
-                                    cat.id
+                                    cat.Id
                                 ? AppColors.lightBlue
                                 : AppColors.white,
                             padding: EdgeInsets.all(5),
                             child: Center(
                               child: Text(
-                                cat.title.toString(),
+                                cat.Title.toString(),
                                 style: TextStyle(
                                     color: context
                                                 .read<IncomeCatFilterCubit>()
                                                 .selectedCatId ==
-                                            cat.id
+                                            cat.Id
                                         ? AppColors.white
                                         : AppColors.primary),
                               ),
@@ -279,7 +279,8 @@ class ExpenseScreen extends StatelessWidget {
           padding: const EdgeInsets.all(8),
           child: Center(
             child: Text(
-              "Total Expense: " + state.response.data!.totalAmount.toString(),
+              "",
+             // "Total Expense: " + state.response.data!.totalAmount.toString(),
               style: TextStyle(
                   color: AppColors.white, fontWeight: FontWeight.bold),
             ),
@@ -314,11 +315,11 @@ class ExpenseScreen extends StatelessWidget {
 
                   final pdfFile = await ReportGenerator.generate(
                       incomePageModel!,
-                      userProfile.name,
+                      userProfile.name.toString(),
                       userProfile.email,
                       'EXPENSE DETAIL REPORT',
                       'Below are the expense details for the ' +
-                          selectedCat!.title.toString() +
+                          selectedCat!.Title.toString() +
                           ' category from ' +
                           DateUtil.formatDisplayDate(
                               DateTime.parse(selectedStartDate)) +
@@ -358,11 +359,11 @@ class ExpenseScreen extends StatelessWidget {
 
                   final pdfFile = await ReportGenerator.generate(
                       incomePageModel!,
-                      userProfile.name,
+                      userProfile.name.toString(),
                       userProfile.email,
                       'EXPENSE DETAIL REPORT',
                       'Below are the expense details for the ' +
-                          selectedCat!.title.toString() +
+                          selectedCat!.Title.toString() +
                           ' category from ' +
                           DateUtil.formatDisplayDate(
                               DateTime.parse(selectedStartDate)) +

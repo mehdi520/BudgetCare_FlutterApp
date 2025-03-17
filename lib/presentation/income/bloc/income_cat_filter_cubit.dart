@@ -2,13 +2,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 
 
-class IncomeCatFilterCubit extends Cubit<String> {
+class IncomeCatFilterCubit extends Cubit<int> {
 
-  IncomeCatFilterCubit() : super ("0");
+  IncomeCatFilterCubit() : super (0);
 
-  String selectedCatId = "0";
+  int selectedCatId = 0;
 
-  void selectCatFilter(String id) {
+  void selectCatFilter(int id) {
     selectedCatId = id;
     emit(selectedCatId);
   }

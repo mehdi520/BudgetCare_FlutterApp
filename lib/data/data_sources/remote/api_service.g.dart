@@ -13,7 +13,7 @@ class _ApiService implements ApiService {
     this._dio, {
     this.baseUrl,
   }) {
-    baseUrl ??= 'https://tracker.thesuperstamp.com:3000/';
+    baseUrl ??= 'https://budgetcare-apis.mehdibalti.com/';
   }
 
   final Dio _dio;
@@ -36,7 +36,7 @@ class _ApiService implements ApiService {
     )
             .compose(
               _dio.options,
-              'api/auth/signup',
+              'api/pub/Register',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -66,7 +66,7 @@ class _ApiService implements ApiService {
     )
             .compose(
               _dio.options,
-              'api/auth/signin',
+              'api/pub/login',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -94,7 +94,7 @@ class _ApiService implements ApiService {
     )
             .compose(
               _dio.options,
-              'api/user/me',
+              'api/User/GetProfile',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -268,7 +268,7 @@ class _ApiService implements ApiService {
     )
             .compose(
               _dio.options,
-              'api/category/addOrUpdateCat',
+              'api/Category/addOrUpdateCat',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -283,8 +283,7 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<HttpResponse<BaseResponseModel>> deleteCat(
-      {required String id}) async {
+  Future<HttpResponse<BaseResponseModel>> deleteCat({required int id}) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -315,7 +314,7 @@ class _ApiService implements ApiService {
   Future<HttpResponse<GetIncomesResModel>> getIncomes({
     required String startDate,
     required String endDate,
-    String? categoryId,
+    int? categoryId,
     required int page,
     required int limit,
   }) async {
@@ -415,7 +414,7 @@ class _ApiService implements ApiService {
   Future<HttpResponse<GetIncomesResModel>> getExpense({
     required String startDate,
     required String endDate,
-    String? categoryId,
+    int? categoryId,
     required int page,
     required int limit,
   }) async {

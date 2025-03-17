@@ -5,5 +5,5 @@ import 'package:dartz/dartz.dart';
 abstract class CategoryRepository{
   Future<Either> getCategories();
   Future<Either> addOrUpdateCat(CatModel req);
-  Future<Either> deleteCat(String id);
+  Future<Either> deleteCat(int id);
 }

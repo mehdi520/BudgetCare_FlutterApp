@@ -34,7 +34,7 @@ class IncomeScreen extends StatelessWidget {
 
   List<CatModel> _categories = [];
   final CatModel allCategory = CatModel(
-      id: '0', title: 'ALL'); // Create a custom "ALL" category
+      Id: 0, Title: 'ALL'); // Create a custom "ALL" category
 
 
   @override
@@ -89,8 +89,8 @@ class IncomeScreen extends StatelessWidget {
                                     }
                                   },
                                 ),
-                                title: Text(cat.description ?? ""),
-                                subtitle: Text(cat.amount.toString() ?? ""),
+                                title: Text(cat.Desciption ?? ""),
+                                subtitle: Text(cat.Amount.toString() ?? ""),
 
                                 onTap: () {
                                   // AppBottomsheet.display(context, CategoryUpdateFormWidget(onCategoryUpdated: () {
@@ -204,21 +204,21 @@ class IncomeScreen extends StatelessWidget {
                     return InkWell(
                       onTap: () {
                         selectedCat = cat;
-                        context.read<IncomeCatFilterCubit>().selectCatFilter(cat.id);
+                        context.read<IncomeCatFilterCubit>().selectCatFilter(cat.Id);
                         context.read<IncomeCubit>().getIncomes(
                           getIncomeReq(context)
                             // DateUtil.getIncomeReqModel(selectedDayIndex, 1, pageSize,context.read<IncomeCatFilterCubit>().selectedCatId,selectedStartDate,selectedEndDate)!
                         );
 
                       },
-                      child: BlocBuilder<IncomeCatFilterCubit, String>(
+                      child: BlocBuilder<IncomeCatFilterCubit, int>(
                         builder: (context, state) {
                           return Container(
                             height: 50,
-                            color: context.read<IncomeCatFilterCubit>().selectedCatId == cat.id ? AppColors.lightBlue : AppColors.white,
+                            color: context.read<IncomeCatFilterCubit>().selectedCatId == cat.Id ? AppColors.lightBlue : AppColors.white,
                             padding: EdgeInsets.all(5),
                             child: Center(
-                              child: Text(cat.title.toString(),style: TextStyle(color: context.read<IncomeCatFilterCubit>().selectedCatId == cat.id ? AppColors.white : AppColors.primary),),
+                              child: Text(cat.Title.toString(),style: TextStyle(color: context.read<IncomeCatFilterCubit>().selectedCatId == cat.Id ? AppColors.white : AppColors.primary),),
 
                             ),
                           );
@@ -243,7 +243,8 @@ class IncomeScreen extends StatelessWidget {
         padding: const EdgeInsets.all(8),
 
         child: Center(
-          child: Text("Total Income: " + state.response.data!.totalAmount.toString(), style: TextStyle(
+         // + state.response.data!.totalAmount.toString()
+          child: Text("Total Income: " , style: TextStyle(
               color: AppColors.white, fontWeight: FontWeight.bold),),
         ),
       );
@@ -275,10 +276,10 @@ class IncomeScreen extends StatelessWidget {
 
                     final pdfFile = await ReportGenerator.generate(
                         incomePageModel!,
-                        userProfile.name,
+                        userProfile.name.toString(),
                        userProfile.email,
                       'INCOME DETAIL REPORT',
-                      'Below are the income details for the ' + selectedCat!.title.toString() + ' category from ' + DateUtil.formatDisplayDate( DateTime.parse(selectedStartDate)) + " to " + DateUtil.formatDisplayDate( DateTime.parse(selectedEndDate))
+                      'Below are the income details for the ' + selectedCat!.Title.toString() + ' category from ' + DateUtil.formatDisplayDate( DateTime.parse(selectedStartDate)) + " to " + DateUtil.formatDisplayDate( DateTime.parse(selectedEndDate))
                     );
                     PdfHelper.openFile(context,pdfFile);
                   }
@@ -301,10 +302,10 @@ class IncomeScreen extends StatelessWidget {
 
                     final pdfFile = await ReportGenerator.generate(
                         incomePageModel!,
-                        userProfile.name,
+                        userProfile.name.toString(),
                         userProfile.email,
                         'INCOME DETAIL REPORT',
-                        'Below are the income details for the ' + selectedCat!.title.toString() + ' category from ' + DateUtil.formatDisplayDate( DateTime.parse(selectedStartDate)) + " to " + DateUtil.formatDisplayDate( DateTime.parse(selectedEndDate))
+                        'Below are the income details for the ' + selectedCat!.Title.toString() + ' category from ' + DateUtil.formatDisplayDate( DateTime.parse(selectedStartDate)) + " to " + DateUtil.formatDisplayDate( DateTime.parse(selectedEndDate))
                     );
                     PdfHelper.openFile(context,pdfFile);
                   }

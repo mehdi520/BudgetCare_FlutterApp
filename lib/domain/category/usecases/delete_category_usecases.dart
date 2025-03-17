@@ -4,9 +4,9 @@ import 'package:dartz/dartz.dart';
 
 import '../../../infra/core/core_exports.dart';
 
-class DeleteCategoryUsecases extends Usecase<Either,String>{
+class DeleteCategoryUsecases extends Usecase<Either,int>{
   @override
-  Future<Either> call({String? params}) async {
+  Future<Either> call({int? params}) async {
     return await sl<CategoryRepository>().deleteCat(params!);
 
   }

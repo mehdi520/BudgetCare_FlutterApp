@@ -53,7 +53,7 @@ class AuthRepositoryImpl extends AuthRepository {
       if (httpResponse.response.statusCode == HttpStatus.ok) {
         print(httpResponse.response);
         if (httpResponse.data.status) {
-          await _secureStorage.setValue(usertoken, httpResponse.data.data!);
+          await _secureStorage.setValue(usertoken, httpResponse.data.access_Token!);
           return await getProfile();
         } else {
           return Left(

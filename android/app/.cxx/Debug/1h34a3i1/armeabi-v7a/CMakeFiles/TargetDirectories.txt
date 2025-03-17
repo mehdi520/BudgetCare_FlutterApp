@@ -1,0 +1,2 @@
+D:/2025/BudgetCare/BudgetCareFlutterApp/BudgetCare_FlutterApp/android/app/.cxx/Debug/1h34a3i1/armeabi-v7a/CMakeFiles/edit_cache.dir
+D:/2025/BudgetCare/BudgetCareFlutterApp/BudgetCare_FlutterApp/android/app/.cxx/Debug/1h34a3i1/armeabi-v7a/CMakeFiles/rebuild_cache.dir

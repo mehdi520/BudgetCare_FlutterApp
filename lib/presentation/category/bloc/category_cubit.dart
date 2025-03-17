@@ -21,7 +21,7 @@ class CategoryCubit extends Cubit<CategoryState> {
             });
   }
 
-  void deleteCategory(String id) async {
+  void deleteCategory(int id) async {
     var returneddata = await sl<DeleteCategoryUsecases>().call(params: id);
     returneddata.fold(
             (error){

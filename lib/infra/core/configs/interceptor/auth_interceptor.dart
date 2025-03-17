@@ -12,7 +12,7 @@ class AuthInterceptor extends Interceptor{
     try {
       final token = await getToken(); // Await the token retrieval
       if (token != null) {
-        options.headers["Authorization"] = "$token";
+        options.headers["Authorization"] = "Bearer $token";
       }
     } catch (e) {
       // Handle error, e.g., log it or take appropriate action

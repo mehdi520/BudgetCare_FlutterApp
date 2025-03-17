@@ -95,9 +95,9 @@ class CategoryFormWidget extends StatelessWidget {
                           context.read<ButtonCubit>().execute(
                               usecase: AddUpdateCategoryUsecase(),
                               params: CatModel(
-                                  id: '',
-                                  title: _catTitleCtrl.text,
-                                  description: _catDescCtrl.text));
+                                  Id: 0,
+                                  Title: _catTitleCtrl.text,
+                                  Description: _catDescCtrl.text));
                         }
                       });
                 })

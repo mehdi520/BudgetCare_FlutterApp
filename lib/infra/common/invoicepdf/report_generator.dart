@@ -24,7 +24,7 @@ class ReportGenerator{
         buildTitle(title,titleDescription),
         buildInvoice(invoice),
         Divider(),
-        buildTotal(invoice.totalAmount.toString()),
+       // buildTotal(invoice..toString()),
       ],
       footer: (context) => buildFooter(),
     ));
@@ -93,12 +93,12 @@ class ReportGenerator{
       'Amount'
     ];
     final data = invoice.data.map((item) {
-      final date = DateTime.parse(item.date);
+      final date = DateTime.parse(item.Date);
 
       return [
         DateUtil.formatDisplayDate(date),
-        item.description,
-        item.amount.toStringAsFixed(2)
+        item.Desciption,
+        item.Amount.toStringAsFixed(2)
       ];
     }).toList();
 

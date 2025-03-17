@@ -57,7 +57,7 @@ import 'package:intl/intl.dart';
     return formatter.format(date);
   }
 
-  static GetIncomeReqModel? getIncomeReqModel(int index, int page, int limit,String catId,String? startDate,String? endDate) {
+  static GetIncomeReqModel? getIncomeReqModel(int index, int page, int limit,int catId,String? startDate,String? endDate) {
     final dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
 
     switch (index) {
@@ -68,7 +68,7 @@ import 'package:intl/intl.dart';
           endDate: dateFormat.format(date['end']!),
           page: page,
           limit: limit,
-          categoryId: catId == "0" ? null : catId
+          categoryId: catId == 0 ? 0 : catId
         );
       case 2:
         var date = getWeek();

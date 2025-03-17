@@ -7,15 +7,13 @@ part of 'cat_model.dart';
 // **************************************************************************
 
 CatModel _$CatModelFromJson(Map<String, dynamic> json) => CatModel(
-      id: json['_id'] as String,
-      title: json['title'] as String?,
-      description: json['description'] as String?,
-      createdAt: json['createdAt'] as String?,
+      Id: (json['Id'] as num).toInt(),
+      Title: json['Title'] as String?,
+      Description: json['Description'] as String?,
     );
 
 Map<String, dynamic> _$CatModelToJson(CatModel instance) => <String, dynamic>{
-      '_id': instance.id,
-      'title': instance.title,
-      'description': instance.description,
-      'createdAt': instance.createdAt,
+      'Id': instance.Id,
+      'Title': instance.Title,
+      'Description': instance.Description,
     };

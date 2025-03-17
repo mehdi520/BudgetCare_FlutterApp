@@ -42,12 +42,12 @@ class CategoryScreen extends StatelessWidget {
                                   );
                                   if (confirmed == true) {
                                     context.read<CategoryCubit>()
-                                        .deleteCategory(cat.id);
+                                        .deleteCategory(cat.Id);
                                   }
                                 },
                               ),
-                              title: Text(cat.title ?? ""),
-                              subtitle: Text(cat.description ?? ""),
+                              title: Text(cat.Title ?? ""),
+                              subtitle: Text(cat.Description ?? ""),
                               onTap: () {
                                 AppBottomsheet.display(context,
                                     CategoryUpdateFormWidget(

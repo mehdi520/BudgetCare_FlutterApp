@@ -1,7 +1,7 @@
 class GetIncomeReqModel{
  String startDate;
  String endDate;
- String? categoryId;
+ int? categoryId;
  int page;
  int limit;
 

@@ -71,7 +71,7 @@ class CategoryRepositoryImpl extends CategoryRepository {
   }
 
   @override
-  Future<Either> deleteCat(String id) async {
+  Future<Either> deleteCat(int id) async {
     try {
       final httpResponse = await _apiService.deleteCat(id: id);
 
