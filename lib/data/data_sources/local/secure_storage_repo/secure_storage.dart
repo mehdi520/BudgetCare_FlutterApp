@@ -57,7 +57,7 @@ class SecureStorage{
 
     // Return UserModel with fetched values
     return UserModel(
-      id: id,
+      id: int.parse(id),
       name: name,
       email: email,
       phone: phone,

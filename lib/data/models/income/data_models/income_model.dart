@@ -6,23 +6,23 @@ part 'income_model.g.dart';
 @JsonSerializable()
 class IncomeModel extends Equatable{
 
-  int Id;
-  double Amount;
-  String? Desciption;
-  String Date;
-  int CatId;
+  int id;
+  double amount;
+  String? desciption;
+  String date;
+  int catId;
 
 
   IncomeModel({
-    required this.Id,
-    required this.Amount,
-    required this.Desciption,
-    required this.Date,
-    required this.CatId,
+    required this.id,
+    required this.amount,
+    required this.desciption,
+    required this.date,
+    required this.catId,
   });
 
   @override
-  List<Object?> get props => [Id,Amount,Desciption,Date,CatId];
+  List<Object?> get props => [id,amount,desciption,date,catId];
 
 
   factory IncomeModel.fromJson(Map<String,dynamic> json) => _$IncomeModelFromJson(json);

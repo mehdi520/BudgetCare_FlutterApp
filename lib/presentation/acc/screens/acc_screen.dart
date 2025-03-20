@@ -162,7 +162,8 @@ class AccScreen extends StatelessWidget {
                                               usecase: UpdateProfileUsecase(),
                                               params: UpdateProfileReqModel(
                                                   name: _nameCtr.text,
-                                                  phone: _phoneCtrl.text
+                                                  phone: _phoneCtrl.text,
+                                                email: _emailCtl.text
                                               ));
                                         }
                                       });

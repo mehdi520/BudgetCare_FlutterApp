@@ -44,9 +44,9 @@ class ExpenseRepositoryImpl extends ExpenseRepository {
   }
 
   @override
-  Future<Either> deleteExpense(String id) async {
+  Future<Either> deleteExpense(int id) async {
     try {
-      final httpResponse = await _apiService.deleteExpense(id: id);
+      final httpResponse = await _apiService.deleteExpense(expenseId:  id);
 
       if (httpResponse.response.statusCode == HttpStatus.ok) {
         print(httpResponse.response);
@@ -74,7 +74,7 @@ class ExpenseRepositoryImpl extends ExpenseRepository {
   @override
   Future<Either> getExpense(GetIncomeReqModel req) async {
     try {
-      final httpResponse = await _apiService.getExpense(startDate: req.startDate,endDate: req.endDate,categoryId: req.categoryId,page: req.page,limit: req.limit);
+      final httpResponse = await _apiService.getExpense(req:  req);
 
       if (httpResponse.response.statusCode == HttpStatus.ok) {
         print(httpResponse.response);

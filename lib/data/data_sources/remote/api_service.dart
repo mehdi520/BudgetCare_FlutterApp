@@ -4,6 +4,7 @@ import 'package:budget_care/data/models/category/data_models/cat_model/cat_model
 import 'package:budget_care/data/models/category/response_models/get_user_cats_res_model/get_user_cats_res_model.dart';
 import 'package:budget_care/data/models/common_models/base_response_model.dart';
 import 'package:budget_care/data/models/income/data_models/income_model.dart';
+import 'package:budget_care/data/models/income/req_models/get_income_req_model.dart';
 import 'package:budget_care/data/models/income/response_models/get_incomes_res_model.dart';
 import 'package:budget_care/data/models/statistics/response_models/get_graph_res_model.dart';
 import 'package:budget_care/data/models/statistics/response_models/get_totals_res_model.dart';
@@ -33,7 +34,7 @@ abstract class ApiService {
   @GET('api/User/GetProfile')
   Future<HttpResponse<GetProfileResModel>> getProfile();
 
-  @PUT('api/user/updateProfile')
+  @POST('api/user/updateProfile')
   Future<HttpResponse<BaseResponseModel>> updateProfile(
       {@Body() required UpdateProfileReqModel req});
 
@@ -54,41 +55,49 @@ abstract class ApiService {
   Future<HttpResponse<BaseResponseModel>> addOrUpdateCat(
       {@Body() required CatModel req});
 
-  @DELETE('api/category/deleteCat/{id}')
+  @DELETE('api/category/delCat')
   Future<HttpResponse<BaseResponseModel>> deleteCat(
-      {@Path() required int id});
+      {@Query('catId') required int id});
 
-  @GET('api/income/getIncomes')
+  @POST('api/income/getUserIncome')
   Future<HttpResponse<GetIncomesResModel>> getIncomes({
-    @Query('startDate') required String startDate,
-    @Query('endDate') required String endDate,
-    @Query('categoryId') int? categoryId,
-    @Query('page') required int page,
-    @Query('limit') required int limit,
+  @Body() required GetIncomeReqModel req
+    // @Query('startDate') required String startDate,
+    // @Query('endDate') required String endDate,
+    // @Query('categoryId') int? categoryId,
+    // @Query('pageNo') required int page,
+    // @Query('pageSize') required int limit,
   });
 
   @POST('api/income/addOrUpdateIncome')
   Future<HttpResponse<BaseResponseModel>> addOrUpdateIncome(
       {@Body() required IncomeModel req});
 
-  @DELETE('api/income/deleteIncome/{id}')
+  @GET('api/income/delIncome')
   Future<HttpResponse<BaseResponseModel>> deleteIncome(
-      {@Path() required String id});
+      {
+        @Query('incomeId') required int incomeId
 
-  @GET('api/expense/getExpense')
+      });
+
+  @POST('api/expense/getUserExpense')
   Future<HttpResponse<GetIncomesResModel>> getExpense({
-    @Query('startDate') required String startDate,
-    @Query('endDate') required String endDate,
-    @Query('categoryId') int? categoryId,
-    @Query('page') required int page,
-    @Query('limit') required int limit,
+  @Body() required GetIncomeReqModel req
+  //
+  // @Query('startDate') required String startDate,
+  //   @Query('endDate') required String endDate,
+  //   @Query('categoryId') int? categoryId,
+  //   @Query('pageNo') required int page,
+  //   @Query('pageSize') required int limit,
   });
 
   @POST('api/expense/addOrUpdateExpense')
   Future<HttpResponse<BaseResponseModel>> addOrUpdateExpense(
       {@Body() required IncomeModel req});
 
-  @DELETE('api/income/deleteExpense/{id}')
+  @GET('api/expense/delExpense')
   Future<HttpResponse<BaseResponseModel>> deleteExpense(
-      {@Path() required String id});
+      {
+        @Query('expenseId') required int expenseId
+      });
 }

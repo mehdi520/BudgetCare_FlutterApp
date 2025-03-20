@@ -5,5 +5,5 @@ import 'package:dartz/dartz.dart';
 abstract class IncomeRepository{
   Future<Either> getIncomes(GetIncomeReqModel req);
   Future<Either> addOrUpdateIncome(IncomeModel req);
-  Future<Either> deleteIncome(String id);
+  Future<Either> deleteIncome(int id);
 }

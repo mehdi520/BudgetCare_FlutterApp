@@ -3,15 +3,15 @@ import 'package:json_annotation/json_annotation.dart';
 part 'cat_model.g.dart';
 @JsonSerializable()
 class CatModel extends Equatable{
-  final int Id;
-  final String? Title;
-  final String? Description;
+  final int id;
+  final String? title;
+  final String? description;
   // final String? CreatedAt;
 
   CatModel({
-    required this.Id,
-    this.Title,
-    this.Description,
+    required this.id,
+    this.title,
+    this.description,
     // this.CreatedAt
   });
 
@@ -19,5 +19,5 @@ class CatModel extends Equatable{
   Map<String, dynamic> toJson() => _$CatModelToJson(this);
 
   @override
-  List<Object?> get props => [Id,Title,Description];
+  List<Object?> get props => [id,title,description];
 }

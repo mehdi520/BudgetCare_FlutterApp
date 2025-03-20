@@ -14,8 +14,8 @@ class CategoryUpdateFormWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _formKey = GlobalKey<FormState>();
-    TextEditingController _catTitleCtrl = TextEditingController(text: cat.Title);
-    TextEditingController _catDescCtrl = TextEditingController(text: cat.Description);
+    TextEditingController _catTitleCtrl = TextEditingController(text: cat.title);
+    TextEditingController _catDescCtrl = TextEditingController(text: cat.description);
     return BlocProvider(
       create: (context) => ButtonCubit(),
       child: BlocListener<ButtonCubit, ButtonState>(
@@ -95,9 +95,9 @@ class CategoryUpdateFormWidget extends StatelessWidget {
                               context.read<ButtonCubit>().execute(
                                   usecase: AddUpdateCategoryUsecase(),
                                   params: CatModel(
-                                      Id: cat.Id,
-                                      Title: _catTitleCtrl.text,
-                                      Description: _catDescCtrl.text));
+                                      id: cat.id,
+                                      title: _catTitleCtrl.text,
+                                      description: _catDescCtrl.text));
                             }
                           });
                     })

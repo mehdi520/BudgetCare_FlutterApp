@@ -1,6 +1,7 @@
 import 'package:budget_care/data/data_sources/local/secure_storage_repo/secure_storage.dart';
 import 'package:budget_care/data/models/category/data_models/cat_model/cat_model.dart';
-import 'package:budget_care/data/models/income/data_models/income_page_model.dart';
+import 'package:budget_care/data/models/income/response_models/get_incomes_res_model.dart';
+import 'package:budget_care/domain/expense/usecases/del_expense_usecase.dart';
 import 'package:budget_care/infra/common/invoicepdf/pdf_helper.dart';
 import 'package:budget_care/infra/common/invoicepdf/report_generator.dart';
 import 'package:budget_care/presentation/category/bloc/category_cubit.dart';
@@ -28,7 +29,7 @@ class ExpenseScreen extends StatelessWidget {
 
   ExpenseScreen({super.key, required this.secureStorage});
 
-  IncomePageModel? incomePageModel = null;
+  GetIncomesResModel? incomePageModel = null;
   int pageSize = 10000;
   int selectedDayIndex = 1;
   String selectedStartDate = "";
@@ -37,7 +38,7 @@ class ExpenseScreen extends StatelessWidget {
 
   List<CatModel> _categories = [];
   final CatModel allCategory =
-      CatModel(Id: 0, Title: 'ALL'); // Create a custom "ALL" category
+      CatModel(id: 0, title: 'ALL'); // Create a custom "ALL" category
 
   @override
   Widget build(BuildContext context) {
@@ -51,8 +52,20 @@ class ExpenseScreen extends StatelessWidget {
           BlocProvider(
               create: (context) =>
                   ExpenseCubit()..getExpense(getIncomeReq(context))),
+          BlocProvider(create: (context) => ButtonCubit())
         ],
-        child: Column(
+        child: BlocListener<ButtonCubit, ButtonState>(
+  listener: (context, state) {
+    if (state is ButtonSuccessState) {
+      context.flushBarSuccessMessage(message: 'Expense deleted successfully');
+      context.read<UserTotalCubit>().getUserTotalData();
+      context.read<GraphDataCubit>().getGraphData();
+      context
+          .read<ExpenseCubit>()
+          .getExpense(getIncomeReq(context));
+    }
+    },
+  child: Column(
           children: [
             _daysWidget(context),
             SizedBox(
@@ -62,17 +75,17 @@ class ExpenseScreen extends StatelessWidget {
             Expanded(child: BlocBuilder<ExpenseCubit, ExpenseState>(
               builder: (BuildContext context, ExpenseState state) {
                 if (state is ExpenseLoadedState) {
-                  incomePageModel = state.response.data;
-                  if (state.response.data!.data.length! < 1) {
+                  incomePageModel = state.response;
+                  if (state.response.data!.length! < 1) {
                     return Center(
                         child: Text("No expense found for selected filter."));
                   } else {
                     return ListView.builder(
-                        itemCount: state.response.data!.data.length != null
-                            ? state.response.data!.data.length!
+                        itemCount: state.response.data!.length != null
+                            ? state.response.data!.length!
                             : 0,
                         itemBuilder: (context, index) {
-                          final cat = state.response!.data!.data[index];
+                          final cat = state.response!.data![index];
                           return Card(
                             margin:
                                 EdgeInsets.only(left: 15, top: 15, right: 15),
@@ -94,12 +107,14 @@ class ExpenseScreen extends StatelessWidget {
                                       cancelButtonText: 'Cancel',
                                     );
                                     if (confirmed == true) {
-                                      //  context.read<CategoryCubit>().deleteCategory(cat.id);
+                                      context.read<ButtonCubit>().execute(
+                                          usecase: DelExpenseUsecase(),
+                                          params: cat.id);
                                     }
                                   },
                                 ),
-                                title: Text(cat.Desciption ?? ""),
-                                subtitle: Text(cat.Amount.toString() ?? ""),
+                                title: Text(cat.desciption ?? ""),
+                                subtitle: Text(cat.amount.toString() ?? ""),
                                 onTap: () {
                                   // AppBottomsheet.display(context, CategoryUpdateFormWidget(onCategoryUpdated: () {
                                   //   context.read<CategoryCubit>().getCategories();
@@ -136,6 +151,7 @@ class ExpenseScreen extends StatelessWidget {
             ),
           ],
         ),
+),
       ),
     );
   }
@@ -229,7 +245,7 @@ class ExpenseScreen extends StatelessWidget {
                         selectedCat = cat;
                         context
                             .read<IncomeCatFilterCubit>()
-                            .selectCatFilter(cat.Id);
+                            .selectCatFilter(cat.id);
                         context.read<ExpenseCubit>().getExpense(
                             getIncomeReq(context)
                             // DateUtil.getIncomeReqModel(selectedDayIndex, 1, pageSize,context.read<IncomeCatFilterCubit>().selectedCatId,selectedStartDate,selectedEndDate)!
@@ -242,18 +258,18 @@ class ExpenseScreen extends StatelessWidget {
                             color: context
                                         .read<IncomeCatFilterCubit>()
                                         .selectedCatId ==
-                                    cat.Id
+                                    cat.id
                                 ? AppColors.lightBlue
                                 : AppColors.white,
                             padding: EdgeInsets.all(5),
                             child: Center(
                               child: Text(
-                                cat.Title.toString(),
+                                cat.title.toString(),
                                 style: TextStyle(
                                     color: context
                                                 .read<IncomeCatFilterCubit>()
                                                 .selectedCatId ==
-                                            cat.Id
+                                            cat.id
                                         ? AppColors.white
                                         : AppColors.primary),
                               ),
@@ -279,8 +295,7 @@ class ExpenseScreen extends StatelessWidget {
           padding: const EdgeInsets.all(8),
           child: Center(
             child: Text(
-              "",
-             // "Total Expense: " + state.response.data!.totalAmount.toString(),
+                "Total Expense: " + state.response.totalAmount.toString(),
               style: TextStyle(
                   color: AppColors.white, fontWeight: FontWeight.bold),
             ),
@@ -319,7 +334,7 @@ class ExpenseScreen extends StatelessWidget {
                       userProfile.email,
                       'EXPENSE DETAIL REPORT',
                       'Below are the expense details for the ' +
-                          selectedCat!.Title.toString() +
+                          selectedCat!.title.toString() +
                           ' category from ' +
                           DateUtil.formatDisplayDate(
                               DateTime.parse(selectedStartDate)) +
@@ -363,7 +378,7 @@ class ExpenseScreen extends StatelessWidget {
                       userProfile.email,
                       'EXPENSE DETAIL REPORT',
                       'Below are the expense details for the ' +
-                          selectedCat!.Title.toString() +
+                          selectedCat!.title.toString() +
                           ' category from ' +
                           DateUtil.formatDisplayDate(
                               DateTime.parse(selectedStartDate)) +
@@ -403,11 +418,9 @@ class ExpenseScreen extends StatelessWidget {
                       mcontext,
                       AddExpenseBts(
                         onIncomeAdded: () {
-                          context.read<UserTotalCubit>().getUserTotalData();
-                          context.read<GraphDataCubit>().getGraphData();
-                          context
-                              .read<ExpenseCubit>()
-                              .getExpense(getIncomeReq(context));
+                           context.read<UserTotalCubit>().getUserTotalData();
+                           context.read<GraphDataCubit>().getGraphData();
+                          context.read<ExpenseCubit>().getExpense(getIncomeReq(context));
                         },
                         rootContext: mcontext,
                       ));

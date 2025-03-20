@@ -58,7 +58,8 @@ import 'package:intl/intl.dart';
   }
 
   static GetIncomeReqModel? getIncomeReqModel(int index, int page, int limit,int catId,String? startDate,String? endDate) {
-    final dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
+    //final dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
+    final dateFormat = DateFormat('yyyy-MM-dd');
 
     switch (index) {
       case 1:
@@ -66,8 +67,8 @@ import 'package:intl/intl.dart';
         return GetIncomeReqModel(
           startDate: dateFormat.format(date['start']!),
           endDate: dateFormat.format(date['end']!),
-          page: page,
-          limit: limit,
+          pageNo: page,
+          pageSize: limit,
           categoryId: catId == 0 ? 0 : catId
         );
       case 2:
@@ -75,8 +76,8 @@ import 'package:intl/intl.dart';
         return GetIncomeReqModel(
           startDate: dateFormat.format(date['start']!),
           endDate: dateFormat.format(date['end']!),
-          page: page,
-          limit: limit,
+          pageNo: page,
+          pageSize: limit,
             categoryId: catId == "0" ? null : catId
 
         );
@@ -85,8 +86,8 @@ import 'package:intl/intl.dart';
         return GetIncomeReqModel(
           startDate: dateFormat.format(date['start']!),
           endDate: dateFormat.format(date['end']!),
-          page: page,
-          limit: limit,
+          pageNo: page,
+          pageSize: limit,
             categoryId: catId == "0" ? null : catId
 
         );
@@ -95,8 +96,8 @@ import 'package:intl/intl.dart';
         return GetIncomeReqModel(
           startDate: startDate!,
           endDate: endDate!,
-          page: page,
-          limit: limit,
+          pageNo: page,
+          pageSize: limit,
             categoryId: catId == "0" ? null : catId
 
         );

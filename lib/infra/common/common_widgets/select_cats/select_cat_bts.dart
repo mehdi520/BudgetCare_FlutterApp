@@ -82,7 +82,7 @@ class SelectCatBts extends StatelessWidget {
               // );
             },
             child: Text(
-              ages[index].Title.toString(),
+              ages[index].title.toString(),
               style: const TextStyle(
                   fontSize: 18
               ),

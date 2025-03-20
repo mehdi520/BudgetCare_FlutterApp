@@ -6,5 +6,5 @@ import 'package:dartz/dartz.dart';
 abstract class ExpenseRepository{
   Future<Either> getExpense(GetIncomeReqModel req);
   Future<Either> addOrUpdateExpense(IncomeModel req);
-  Future<Either> deleteExpense(String id);
+  Future<Either> deleteExpense(int id);
 }

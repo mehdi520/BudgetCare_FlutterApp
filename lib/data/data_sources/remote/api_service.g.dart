@@ -118,7 +118,7 @@ class _ApiService implements ApiService {
     _data.addAll(req.toJson());
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<HttpResponse<BaseResponseModel>>(Options(
-      method: 'PUT',
+      method: 'POST',
       headers: _headers,
       extra: _extra,
     )
@@ -285,7 +285,7 @@ class _ApiService implements ApiService {
   @override
   Future<HttpResponse<BaseResponseModel>> deleteCat({required int id}) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'catId': id};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _result = await _dio.fetch<Map<String, dynamic>>(
@@ -296,7 +296,7 @@ class _ApiService implements ApiService {
     )
             .compose(
               _dio.options,
-              'api/category/deleteCat/${id}',
+              'api/category/delCat',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -311,33 +311,22 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<HttpResponse<GetIncomesResModel>> getIncomes({
-    required String startDate,
-    required String endDate,
-    int? categoryId,
-    required int page,
-    required int limit,
-  }) async {
+  Future<HttpResponse<GetIncomesResModel>> getIncomes(
+      {required GetIncomeReqModel req}) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{
-      r'startDate': startDate,
-      r'endDate': endDate,
-      r'categoryId': categoryId,
-      r'page': page,
-      r'limit': limit,
-    };
-    queryParameters.removeWhere((k, v) => v == null);
+    final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    const Map<String, dynamic>? _data = null;
+    final _data = <String, dynamic>{};
+    _data.addAll(req.toJson());
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<HttpResponse<GetIncomesResModel>>(Options(
-      method: 'GET',
+      method: 'POST',
       headers: _headers,
       extra: _extra,
     )
             .compose(
               _dio.options,
-              'api/income/getIncomes',
+              'api/income/getUserIncome',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -383,20 +372,20 @@ class _ApiService implements ApiService {
 
   @override
   Future<HttpResponse<BaseResponseModel>> deleteIncome(
-      {required String id}) async {
+      {required int incomeId}) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'incomeId': incomeId};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<HttpResponse<BaseResponseModel>>(Options(
-      method: 'DELETE',
+      method: 'GET',
       headers: _headers,
       extra: _extra,
     )
             .compose(
               _dio.options,
-              'api/income/deleteIncome/${id}',
+              'api/income/delIncome',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -411,33 +400,22 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<HttpResponse<GetIncomesResModel>> getExpense({
-    required String startDate,
-    required String endDate,
-    int? categoryId,
-    required int page,
-    required int limit,
-  }) async {
+  Future<HttpResponse<GetIncomesResModel>> getExpense(
+      {required GetIncomeReqModel req}) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{
-      r'startDate': startDate,
-      r'endDate': endDate,
-      r'categoryId': categoryId,
-      r'page': page,
-      r'limit': limit,
-    };
-    queryParameters.removeWhere((k, v) => v == null);
+    final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    const Map<String, dynamic>? _data = null;
+    final _data = <String, dynamic>{};
+    _data.addAll(req.toJson());
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<HttpResponse<GetIncomesResModel>>(Options(
-      method: 'GET',
+      method: 'POST',
       headers: _headers,
       extra: _extra,
     )
             .compose(
               _dio.options,
-              'api/expense/getExpense',
+              'api/expense/getUserExpense',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -483,20 +461,20 @@ class _ApiService implements ApiService {
 
   @override
   Future<HttpResponse<BaseResponseModel>> deleteExpense(
-      {required String id}) async {
+      {required int expenseId}) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'expenseId': expenseId};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<HttpResponse<BaseResponseModel>>(Options(
-      method: 'DELETE',
+      method: 'GET',
       headers: _headers,
       extra: _extra,
     )
             .compose(
               _dio.options,
-              'api/income/deleteExpense/${id}',
+              'api/expense/delExpense',
               queryParameters: queryParameters,
               data: _data,
             )

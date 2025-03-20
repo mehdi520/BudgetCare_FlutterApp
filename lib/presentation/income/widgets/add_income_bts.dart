@@ -88,7 +88,7 @@ class AddIncomeBts extends StatelessWidget {
                   ontap: () {
                     AppBottomsheet.display(rootContext, SelectCatBts(onCatSelected: (cat){
                       selectedCat = cat;
-                      _catCtrl.text = cat.Title.toString();
+                      _catCtrl.text = cat.title.toString();
                     },));
                   },
                 ),
@@ -153,11 +153,11 @@ class AddIncomeBts extends StatelessWidget {
                           context.read<ButtonCubit>().execute(
                               usecase: AddUpdateIncomeUsecase(),
                               params: IncomeModel(
-                                  Id: 0,
-                                  Date: _dateCtrl.text,
-                                  CatId: selectedCat!.Id,
-                                  Amount: double.parse( _amountCtrl.text),
-                                  Desciption: _incDescCtrl.text));
+                                  id: 0,
+                                  date: _dateCtrl.text,
+                                  catId: selectedCat!.id,
+                                  amount: double.parse( _amountCtrl.text),
+                                  desciption: _incDescCtrl.text));
                         }
                       });
                 })

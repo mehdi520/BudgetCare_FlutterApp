@@ -8,12 +8,12 @@ part of 'pass_change_req_model.dart';
 
 PassChangeReqModel _$PassChangeReqModelFromJson(Map<String, dynamic> json) =>
     PassChangeReqModel(
-      oldPassword: json['oldPassword'] as String?,
-      newPassword: json['newPassword'] as String?,
+      oldPass: json['oldPass'] as String?,
+      newPass: json['newPass'] as String?,
     );
 
 Map<String, dynamic> _$PassChangeReqModelToJson(PassChangeReqModel instance) =>
     <String, dynamic>{
-      'oldPassword': instance.oldPassword,
-      'newPassword': instance.newPassword,
+      'oldPass': instance.oldPass,
+      'newPass': instance.newPass,
     };

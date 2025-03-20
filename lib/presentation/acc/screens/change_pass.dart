@@ -126,8 +126,8 @@ class ChangePass extends StatelessWidget {
                                           context.read<ButtonCubit>().execute(
                                               usecase: ChangePassUsecase(),
                                               params: PassChangeReqModel(
-                                                  oldPassword: _oldPassCtrl.text,
-                                                  newPassword: _cnfNewPassCtl.text
+                                                  oldPass: _oldPassCtrl.text,
+                                                  newPass: _cnfNewPassCtl.text
                                               ));
                                         }
                                       });

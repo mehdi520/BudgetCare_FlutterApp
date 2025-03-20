@@ -43,9 +43,9 @@ class IncomeRespositoryImpl extends IncomeRepository {
   }
 
   @override
-  Future<Either> deleteIncome(String id) async {
+  Future<Either> deleteIncome(int id) async {
     try {
-      final httpResponse = await _apiService.deleteIncome(id: id);
+      final httpResponse = await _apiService.deleteIncome(incomeId: id);
 
       if (httpResponse.response.statusCode == HttpStatus.ok) {
         print(httpResponse.response);
@@ -73,7 +73,7 @@ class IncomeRespositoryImpl extends IncomeRepository {
   @override
   Future<Either> getIncomes(GetIncomeReqModel req) async {
     try {
-      final httpResponse = await _apiService.getIncomes(startDate: req.startDate,endDate: req.endDate,categoryId: req.categoryId,page: req.page,limit: req.limit);
+      final httpResponse = await _apiService.getIncomes(req: req);
 
       if (httpResponse.response.statusCode == HttpStatus.ok) {
         print(httpResponse.response);

@@ -55,6 +55,8 @@ dependencies:
   open_file: ^3.5.10
   share_plus: ^10.0.0
   fl_chart: ^0.68.0
+  printing: ^5.14.2
+
 
 
 
@@ -95,6 +97,7 @@ flutter:
     - assets/fonts/
     - assets/images/
     - assets/cert/certificate.pem
+    - assets/fonts/opensans_regular.ttf
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
@@ -107,12 +110,11 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
+fonts:
+  - family: OpenSans
+    fonts:
+      - asset: assets/fonts/opensans.ttf
+
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

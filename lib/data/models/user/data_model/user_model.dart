@@ -1,4 +1,3 @@
-import 'dart:ffi';
 
 import 'package:json_annotation/json_annotation.dart';
 
@@ -10,7 +9,7 @@ class UserModel {
    String email;
    String? name;
    String? phone;
-  final String createdAt;
+  final String? createdAt;
 
   UserModel({
      this.name,

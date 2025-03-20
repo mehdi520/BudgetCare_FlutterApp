@@ -1,4 +1,4 @@
-import 'package:budget_care/data/models/income/data_models/income_page_model.dart';
+import 'package:budget_care/data/models/income/response_models/get_incomes_res_model.dart';
 import 'package:budget_care/infra/common/common_export.dart';
 import 'package:budget_care/infra/common/invoicepdf/pdf_helper.dart';
 import 'package:flutter/services.dart';
@@ -13,7 +13,7 @@ class ReportGenerator{
     return data.buffer.asUint8List();
   }
 
-  static Future<File> generate(IncomePageModel invoice,String name,String email,String title,String titleDescription) async {
+  static Future<File> generate(GetIncomesResModel invoice,String name,String email,String title,String titleDescription) async {
     final pdf = Document();
     final Uint8List logoData = await _loadLogo();
 
@@ -24,7 +24,7 @@ class ReportGenerator{
         buildTitle(title,titleDescription),
         buildInvoice(invoice),
         Divider(),
-       // buildTotal(invoice..toString()),
+        buildTotal(invoice.totalAmount.toString()),
       ],
       footer: (context) => buildFooter(),
     ));
@@ -86,19 +86,19 @@ class ReportGenerator{
     ],
   );
 
-  static Widget buildInvoice(IncomePageModel invoice) {
+  static Widget buildInvoice(GetIncomesResModel invoice) {
     final headers = [
       'Date',
       'Description',
       'Amount'
     ];
     final data = invoice.data.map((item) {
-      final date = DateTime.parse(item.Date);
+      final date = DateTime.parse(item.date);
 
       return [
         DateUtil.formatDisplayDate(date),
-        item.Desciption,
-        item.Amount.toStringAsFixed(2)
+        item.desciption,
+        item.amount.toStringAsFixed(2)
       ];
     }).toList();
 
