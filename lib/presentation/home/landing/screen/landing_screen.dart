@@ -4,7 +4,6 @@ import 'package:budget_care/infra/common/common_widgets/sessionexpired_popup/ses
 import 'package:budget_care/infra/core/blocs/get_login_user/get_logged_in_cubit.dart';
 import 'package:budget_care/infra/core/configs/routes/app_routes.dart';
 import 'package:budget_care/infra/core/configs/routes/routes_arguments_model/income_route_arg_model.dart';
-import 'package:budget_care/presentation/acc/screens/acc_screen.dart';
 import 'package:budget_care/presentation/acc/screens/change_pass.dart';
 import 'package:budget_care/presentation/category/bloc/category_cubit.dart';
 import 'package:budget_care/presentation/expense/screens/expense_screen.dart';
@@ -253,6 +252,7 @@ class LandingScreen extends StatelessWidget {
                     color: AppColors.lightBlue,
                   ),
                   child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Container(
                         height: 70,
@@ -270,16 +270,19 @@ class LandingScreen extends StatelessWidget {
                         ),
                       ),
                       SizedBox(
-                        height: 15,
+                        height: 13,
                       ),
                       Text(
                         state.user.name.toString(),
+                        overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                             color: AppColors.white,
                             fontWeight: FontWeight.bold),
                       ),
                       Text(
                         state.user.email.toString(),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                             color: AppColors.white,
                             fontWeight: FontWeight.bold),

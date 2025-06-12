@@ -55,7 +55,7 @@ abstract class ApiService {
   Future<HttpResponse<BaseResponseModel>> addOrUpdateCat(
       {@Body() required CatModel req});
 
-  @DELETE('api/category/delCat')
+  @GET('api/category/delCat')
   Future<HttpResponse<BaseResponseModel>> deleteCat(
       {@Query('catId') required int id});
 

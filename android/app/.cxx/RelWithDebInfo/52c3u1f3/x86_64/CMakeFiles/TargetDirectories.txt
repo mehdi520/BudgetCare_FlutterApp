@@ -1,0 +1,2 @@
+/Users/mehdi/Documents/FlutterWorkSpace/budget_care/android/app/.cxx/RelWithDebInfo/52c3u1f3/x86_64/CMakeFiles/edit_cache.dir
+/Users/mehdi/Documents/FlutterWorkSpace/budget_care/android/app/.cxx/RelWithDebInfo/52c3u1f3/x86_64/CMakeFiles/rebuild_cache.dir
